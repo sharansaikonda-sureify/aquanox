@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import { ClientAPI } from "../../constants/clientapi";
 import ClientAPIObjectMapping from "../ClientAPIObjectMapping/ClientAPIObjectMapping";
 import CreateClientAPIModal from "../CreateClientAPIModal/CreateClientAPIModal";
+import { GetTokensData } from "../../constants/utils";
 
 const ClientAPIs = ({ $, Popper }) => {
   const customErrorCodesDefaultSchema = {
@@ -52,10 +53,13 @@ const ClientAPIs = ({ $, Popper }) => {
     const arr = idsStrLocal.split(",");
     let data = [];
     let idsList = [];
+    const tokens = GetTokensData();
     try {
       for (let i = 0; i < arr.length; i++) {
         const fetch_url = constants.CLIENT_APIS_URL() + "/" + arr[i];
-        const resp = await axios.get(fetch_url);
+        const resp = await axios.get(fetch_url, {
+          headers: tokens,
+        });
 
         data.push(new ClientAPI(resp.data.data));
         idsList.push(resp.data.data["id"]);
@@ -77,8 +81,11 @@ const ClientAPIs = ({ $, Popper }) => {
 
   const fetchAllClientAPIs = async () => {
     const fetch_url = constants.CLIENT_APIS_URL() + "?page_num=1&page_limit=0";
+    const tokens = GetTokensData();
     try {
-      const resp = await axios.get(fetch_url);
+      const resp = await axios.get(fetch_url, {
+        headers: tokens,
+      });
       let data = [];
       for (let i = 0; i < resp.data.data.length; i++) {
         data.push(new ClientAPI(resp.data.data[i]));
@@ -109,7 +116,10 @@ const ClientAPIs = ({ $, Popper }) => {
 
   const createNewClientAPI = async (jsonData, handleClose) => {
     try {
-      const resp = await axios.post(constants.CLIENT_APIS_URL(), jsonData);
+      const tokens = GetTokensData();
+      const resp = await axios.post(constants.CLIENT_APIS_URL(), jsonData, {
+        headers: tokens,
+      });
       fetchClientAPI("" + resp.data.data.id);
       handleClose(true);
     } catch (e) {

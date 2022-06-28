@@ -10,6 +10,7 @@ import CallCDSModal from "../CallCDSModal/CallCDSModal";
 import CreateMappingModal from "../CreateMappingModal/CreateMappingModal";
 import GenerateMappingsModal from "../GenerateMappingsModal/GenerateMappingsModal";
 import { v4 as uuidv4 } from "uuid";
+import { GetTokensData } from "../../constants/utils";
 
 const SureifyObjectMappings = ({ $, Popper }) => {
   const newMappingDefaultPayload = {
@@ -87,8 +88,12 @@ const SureifyObjectMappings = ({ $, Popper }) => {
   const fetchMappings = async () => {
     const fetch_url =
       constants.SOM_URL() + "?" + constants.CLIENT_DATA_SOURCE_ID + "=" + cdsId;
+    const tokens = GetTokensData();
+
     try {
-      const resp = await axios.get(fetch_url);
+      const resp = await axios.get(fetch_url, {
+        headers: tokens,
+      });
       let data = [];
       for (let i = 0; i < resp.data.data.length; i++) {
         data.push(new SureifyObjectMapping(resp.data.data[i]));
@@ -110,7 +115,11 @@ const SureifyObjectMappings = ({ $, Popper }) => {
 
   const createNewMappings = async (jsonData, handleClose) => {
     try {
-      await axios.patch(constants.SOM_URL(), jsonData);
+      const tokens = GetTokensData();
+
+      await axios.patch(constants.SOM_URL(), jsonData, {
+        headers: tokens,
+      });
       fetchMappings();
       handleClose(true);
     } catch (e) {
@@ -153,13 +162,7 @@ const SureifyObjectMappings = ({ $, Popper }) => {
 
   const fetchResponse = async (data) => {
     const fetch_url = constants.SOM_URL() + "/" + cdsId + "?mapping_type=fetch";
-    let tokens = localStorage.getItem("tokens");
-    if (tokens) {
-      tokens = JSON.parse(tokens);
-    } else {
-      tokens = {};
-    }
-
+    const tokens = GetTokensData();
     try {
       const resp = await axios.post(fetch_url, data, {
         headers: tokens,

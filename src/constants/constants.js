@@ -5,9 +5,17 @@ const constants = {
   CLIENT_APIS: "/client-apis",
   CLIENT_DATA_SOURCE_ID: "client_data_source_id",
   SOM_URL: function () {
+    this.BASE_URL =
+      localStorage.getItem("tokens") == null
+        ? "http://localhost:8080"
+        : JSON.parse(localStorage.getItem("tokens"))["base_url"];
     return this.BASE_URL + this.PLUTO_PATH + this.SUREIFY_OBJECT_MAPPINGS;
   },
   CLIENT_APIS_URL: function () {
+    this.BASE_URL =
+      localStorage.getItem("tokens") == null
+        ? "http://localhost:8080"
+        : JSON.parse(localStorage.getItem("tokens"))["base_url"];
     return this.BASE_URL + this.PLUTO_PATH + this.CLIENT_APIS;
   },
   MAPPINGS_DATA_TYPE: ["array", "string", "object", "number", "generic"],

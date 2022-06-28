@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import constants from "../../constants/constants";
 import { SureifyObjectMapping } from "../../constants/som";
+import { GetTokensData } from "../../constants/utils";
 import "./ObjectMapping.css";
 
 const ObjectMapping = ({
@@ -22,8 +23,11 @@ const ObjectMapping = ({
 
   const updateMapping = async () => {
     try {
+      const tokens = GetTokensData();
       const jsonData = data.getPatchMappings(cdsId);
-      await axios.patch(constants.SOM_URL(), jsonData);
+      await axios.patch(constants.SOM_URL(), jsonData, {
+        headers: tokens,
+      });
     } catch (e) {
       alert(
         e.message ||
@@ -35,8 +39,11 @@ const ObjectMapping = ({
 
   const deleteMapping = async () => {
     try {
+      const tokens = GetTokensData();
       const jsonData = data.getDeleteMappings(cdsId);
-      await axios.patch(constants.SOM_URL(), jsonData);
+      await axios.patch(constants.SOM_URL(), jsonData, {
+        headers: tokens,
+      });
       filterMappingsByGroup(data.mapping_id);
     } catch (e) {
       alert(

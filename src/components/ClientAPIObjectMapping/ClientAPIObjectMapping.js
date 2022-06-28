@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import constants from "../../constants/constants";
 import { ClientAPI } from "../../constants/clientapi";
 import "./ClientAPIObjectMapping.css";
+import { GetTokensData } from "../../constants/utils";
 
 const ClientAPIObjectMapping = ({ mapping, cloneMappings, clientAPIId }) => {
   const [data, setData] = useState(new ClientAPI(mapping));
@@ -18,9 +19,13 @@ const ClientAPIObjectMapping = ({ mapping, cloneMappings, clientAPIId }) => {
   const updateClientAPI = async () => {
     try {
       const jsonData = data.getPutMappings();
+      const tokens = GetTokensData();
       await axios.put(
         constants.CLIENT_APIS_URL() + "/" + clientAPIId,
-        jsonData
+        jsonData,
+        {
+          headers: tokens,
+        }
       );
     } catch (e) {
       alert(
@@ -37,7 +42,10 @@ const ClientAPIObjectMapping = ({ mapping, cloneMappings, clientAPIId }) => {
       "" + clientAPIId
     ) {
       try {
-        await axios.delete(constants.CLIENT_APIS_URL() + "/" + clientAPIId);
+        const tokens = GetTokensData();
+        await axios.delete(constants.CLIENT_APIS_URL() + "/" + clientAPIId, {
+          headers: tokens,
+        });
       } catch (e) {
         alert(
           e.message ||
@@ -62,8 +70,11 @@ const ClientAPIObjectMapping = ({ mapping, cloneMappings, clientAPIId }) => {
               setIsLocked(!isLocked);
               if (isLocked) {
                 try {
+                  const tokens = GetTokensData();
                   const fetch_url = constants.CLIENT_APIS_URL() + "/" + data.id;
-                  const resp = await axios.get(fetch_url);
+                  const resp = await axios.get(fetch_url, {
+                    headers: tokens,
+                  });
                   setData(new ClientAPI(resp.data.data));
                 } catch (e) {
                   alert(
