@@ -1,0 +1,12 @@
+.container {
+    padding: 2%;
+    border: 2px solid white;
+    box-shadow: 2px 2px 4px black;
+    margin-top: 1%;
+    border-radius: 5px;
+}
+
+select {
+    width: 200px !important;
+}
+

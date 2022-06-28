@@ -1,0 +1,31 @@
+.parentidcontainer {
+    margin: 2%;
+    box-shadow: 2px 2px 4px black;
+    border-radius: 5px;
+    padding: 2%;
+}
+
+.customnavbar {
+    background-color: black;
+}
+
+.mappingscontainer {
+    height: 93vh;
+    display: inline;
+    overflow: scroll;
+}
+
+.responsecontainer {
+    height: 93vh;
+    display: inline;
+    overflow: scroll;
+}
+
+/* .customscrollbar {
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
+}
+
+.customscrollbar::-webkit-scrollbar {
+    display: none;
+} */
