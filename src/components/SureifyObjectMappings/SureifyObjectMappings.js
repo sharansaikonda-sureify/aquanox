@@ -187,6 +187,7 @@ const SureifyObjectMappings = ({ $, Popper }) => {
         mappings={mappings}
       ></GenerateMappingsModal>
       <CallCDSModal
+        key={uuidv4()}
         closeModal={closeModal}
         show={showModal}
         fetchResponse={fetchResponse}
