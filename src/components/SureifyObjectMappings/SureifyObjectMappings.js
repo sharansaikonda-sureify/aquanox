@@ -17,7 +17,8 @@ const SureifyObjectMappings = ({ $, Popper }) => {
     data_type: "string",
     extra: null,
     field_source: "response",
-    formatter: null,
+    formatter: "{}",
+    post_op_config: "{}",
     mapping_id: uuidv4(),
     parent_idx: 0,
     sureify_field_name: "",
@@ -35,6 +36,7 @@ const SureifyObjectMappings = ({ $, Popper }) => {
   const [mappings, setMappings] = useState([]);
   const [cdsId, setCdsId] = useState(0);
   const [parentIds, setParentIds] = useState([]);
+  const [currParentId, setCurrParentId] = useState(0);
   const [toggleContainers, setToggleContainers] = useState({});
   const [response, setResponse] = useState({});
   const [showModal, setShowModal] = useState(false);
@@ -132,6 +134,7 @@ const SureifyObjectMappings = ({ $, Popper }) => {
   };
 
   const cloneMappings = (data) => {
+    setCurrParentId(new SureifyObjectMapping(data).parent_idx);
     openCreateModal({ ...data, mapping_id: uuidv4() });
   };
 
@@ -245,18 +248,18 @@ const SureifyObjectMappings = ({ $, Popper }) => {
       </div>
       <div className="row mt-5 p-2">
         <div className="col-8 customscrollbar mappingscontainer">
+          <CreateMappingModal
+            key={uuidv4()}
+            defaultPayload={mappingsPayload}
+            cdsId={cdsId}
+            createNewMappings={createNewMappings}
+            closeModal={closeCreateModal}
+            show={showCreateModal}
+            parent_idx={currParentId}
+          />
           {parentIds.map((id) => {
             return (
               <div className="parentcontainer">
-                <CreateMappingModal
-                  key={uuidv4()}
-                  defaultPayload={mappingsPayload}
-                  cdsId={cdsId}
-                  createNewMappings={createNewMappings}
-                  closeModal={closeCreateModal}
-                  show={showCreateModal}
-                  parent_idx={id}
-                />
                 <div className="row mt-2">
                   <div className="col">
                     <h3>Parent ID: {id}</h3>

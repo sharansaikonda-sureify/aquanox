@@ -152,6 +152,24 @@ const ObjectMapping = ({
       </div>
       <div className="row mt-2">
         <div className="col">
+          <label className="form-label" htmlFor="post_op_config">
+            Post Op Config
+          </label>
+        </div>
+        <div className="col">
+          <textarea
+            disabled={isLocked}
+            onChange={(e) => {
+              changeHandler(e);
+            }}
+            className=" form-control"
+            name="post_op_config"
+            value={data.post_op_config}
+          />
+        </div>
+      </div>
+      <div className="row mt-2">
+        <div className="col">
           <label className="form-label" htmlFor="formatter">
             Formatter
           </label>
@@ -275,6 +293,7 @@ const ObjectMapping = ({
         <div className="col">
           <input
             type="button"
+            disabled={isLocked}
             className="form-control btn-danger"
             value="Update"
             onClick={updateMapping}
@@ -283,6 +302,7 @@ const ObjectMapping = ({
         <div className="col">
           <input
             type="button"
+            disabled={isLocked}
             className="form-control btn-danger"
             value="Delete"
             onClick={deleteMapping}
@@ -291,6 +311,7 @@ const ObjectMapping = ({
         <div className="col">
           <input
             type="button"
+            disabled={isLocked}
             className="form-control btn-danger"
             value="Clone"
             onClick={() => {

@@ -5,6 +5,7 @@ export function SureifyObjectMapping({
   extra,
   field_source,
   formatter,
+  post_op_config,
   mapping_id,
   parent_idx,
   sureify_field_id,
@@ -39,6 +40,13 @@ export function SureifyObjectMapping({
     this.extra = JSON.stringify(extra);
   }
 
+  this.post_op_config = post_op_config;
+  if (!post_op_config) {
+    this.post_op_config = "{}";
+  } else if (typeof post_op_config == "object") {
+    this.post_op_config = JSON.stringify(post_op_config);
+  }
+
   this.formatter = formatter;
   if (!formatter) {
     this.formatter = "{}";
@@ -55,6 +63,7 @@ export function SureifyObjectMapping({
           data_type: this.data_type,
           field_source: this.field_source,
           extra: JSON.parse(this.extra),
+          post_op_config: this.post_op_config,
           formatter: this.formatter,
           mapping_id: this.mapping_id,
           parent_idx: this.parent_idx,
@@ -75,6 +84,7 @@ export function SureifyObjectMapping({
           data_type: this.data_type,
           field_source: this.field_source,
           extra: JSON.parse(this.extra),
+          post_op_config: this.post_op_config,
           formatter: this.formatter,
           mapping_id: this.mapping_id,
           parent_idx: this.parent_idx,
@@ -92,6 +102,7 @@ export function SureifyObjectMapping({
       data_type: this.data_type,
       field_source: this.field_source,
       extra: JSON.parse(this.extra),
+      post_op_config: this.post_op_config,
       formatter: this.formatter,
       mapping_id: this.mapping_id,
       parent_idx: this.parent_idx,
