@@ -6,7 +6,7 @@
 }
 
 .customnavbar {
-    background-color: black;
+    background-color: whitesmoke;
 }
 
 .mappingscontainer {
@@ -21,11 +21,11 @@
     overflow: scroll;
 }
 
-/* .customscrollbar {
+.customscrollbar {
   -ms-overflow-style: none; 
   scrollbar-width: none; 
 }
 
 .customscrollbar::-webkit-scrollbar {
     display: none;
-} */
+}

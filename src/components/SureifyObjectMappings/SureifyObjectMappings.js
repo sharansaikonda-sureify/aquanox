@@ -1,16 +1,55 @@
+// Packages
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+// Styles
+import "./SureifyObjectMappings.css";
+
+// Custom Components
 import ObjectMapping from "../ObjectMapping/ObjectMapping";
 import CDSResponse from "../CDSResponse/CDSResponse";
+
+// Custom Objects
 import constants from "../../constants/constants";
 import { SureifyObjectMapping } from "../../constants/som";
-import "./SureifyObjectMappings.css";
-import { useNavigate } from "react-router-dom";
+
+// Modals
 import CallCDSModal from "../CallCDSModal/CallCDSModal";
 import CreateMappingModal from "../CreateMappingModal/CreateMappingModal";
 import GenerateMappingsModal from "../GenerateMappingsModal/GenerateMappingsModal";
+
+// Helper functions
 import { v4 as uuidv4 } from "uuid";
 import { GetTokensData } from "../../constants/utils";
+
+// Materuak UI Components
+import {
+  Button,
+  Stack,
+  TextField,
+  Badge,
+  Typography,
+  Box,
+} from "@mui/material";
+
+// Material UI Colors
+import { deepPurple, grey, yellow } from "@mui/material/colors";
+
+// Material UI Icons
+import {
+  Home,
+  ScheduleSend,
+  Search,
+  CopyAll,
+  CreateNewFolder,
+  InfoOutlined,
+  Add,
+  ExpandMore,
+  ExpandLess,
+  Build,
+} from "@mui/icons-material/";
+import ScreenAdjuster from "../ScreenAdjuster/ScreenAdjuster";
 
 const SureifyObjectMappings = ({ $, Popper }) => {
   const newMappingDefaultPayload = {
@@ -32,6 +71,12 @@ const SureifyObjectMappings = ({ $, Popper }) => {
   const [generateMappingsCDSIdsList, setGenerateMappingsCDSIdsList] = useState(
     {}
   );
+
+  // 0 - Complete Left
+  // 1 - Center
+  // 2 - Complete Right
+  const [showScreenAdjuster, setShowScreenAdjuster] = useState(false);
+  const [adjustScreen, setAdjustScreen] = useState(1);
 
   const [mappings, setMappings] = useState([]);
   const [cdsId, setCdsId] = useState(0);
@@ -191,79 +236,126 @@ const SureifyObjectMappings = ({ $, Popper }) => {
         closeModal={closeModal}
         show={showModal}
         fetchResponse={fetchResponse}
-      />
+      ></CallCDSModal>
       <div className="row fixed-top p-2 customnavbar">
         <div className="col">
-          <input
-            className="form-control btn-light"
-            onClick={() => {
-              navigate("/");
-            }}
-            type="button"
-            value="Home"
-          />
-        </div>
-        <div className="col">
-          <input
-            className="form-control"
-            id="client_data_source_id"
-            name="client_data_source_id"
-            type="number"
-            placeholder="Enter client data source id"
-            onChange={(e) => {
-              setCdsId(e.target.value);
-            }}
-            value={cdsId}
-          />
-        </div>
-        <div className="col">
-          <input
-            className="form-control btn-success"
-            id="create_mapping_button"
-            name="create_mapping_button"
-            type="button"
-            onClick={() => {
-              openCreateModal({
-                ...newMappingDefaultPayload,
-                parent_idx: 0,
-              });
-            }}
-            value="Create"
-          />
-        </div>
-        <div className="col">
-          <input
-            className="form-control btn-success"
-            id="clone_all_button"
-            name="clone_all_button"
-            type="button"
-            onClick={generateClonedFile}
-            value="Clone All"
-          />
-        </div>
-        <div className="col">
-          <input
-            className="form-control btn-success"
-            id="get_mappings_button"
-            name="get_mappings_button"
-            type="button"
-            onClick={fetchMappings}
-            value="Fetch Mappings"
-          />
-        </div>
-        <div className="col">
-          <input
-            className="form-control btn-success"
-            id="get_response_button"
-            name="get_response_button"
-            type="button"
-            onClick={openModal}
-            value="Call CDS"
-          />
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            spacing={2}
+          >
+            <Button
+              variant="contained"
+              style={{ backgroundColor: "black" }}
+              onClick={() => {
+                navigate("/");
+              }}
+              startIcon={<Home />}
+            >
+              AQUANOX
+            </Button>
+
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="flex-end"
+              spacing={2}
+            >
+              <Button
+                variant="contained"
+                sx={{
+                  backgroundColor: yellow[900],
+                  "&:hover": {
+                    backgroundColor: yellow[800],
+                  },
+                }}
+                id="show_hide_screen_adjuster"
+                name="show_hide_screen_adjuster"
+                onClick={() => {
+                  setShowScreenAdjuster(!showScreenAdjuster);
+                }}
+                endIcon={<Build />}
+              >
+                {showScreenAdjuster ? "Hide Adjuster" : "Show Adjuster"}
+              </Button>
+              <TextField
+                id="client_data_source_id"
+                name="client_data_source_id"
+                label="Client Data Source ID"
+                variant="outlined"
+                onChange={(e) => {
+                  setCdsId(e.target.value);
+                }}
+                type="number"
+                inputProps={{
+                  style: {
+                    padding: "10px",
+                    width: "15vw",
+                  },
+                }}
+                value={cdsId}
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                id="create_mapping_button"
+                name="create_mapping_button"
+                onClick={() => {
+                  openCreateModal({
+                    ...newMappingDefaultPayload,
+                    parent_idx: 0,
+                  });
+                }}
+                endIcon={<CreateNewFolder />}
+              >
+                Create
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                id="clone_all_button"
+                name="clone_all_button"
+                onClick={generateClonedFile}
+                endIcon={<CopyAll />}
+              >
+                Clone All
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                id="get_mappings_button"
+                name="get_mappings_button"
+                onClick={fetchMappings}
+                endIcon={<Search />}
+              >
+                Fetch Mappings
+              </Button>
+              <Button
+                variant="contained"
+                color="success"
+                id="get_response_button"
+                name="get_response_button"
+                onClick={openModal}
+                endIcon={<ScheduleSend />}
+              >
+                Call CDS
+              </Button>
+            </Stack>
+          </Stack>
         </div>
       </div>
+      <ScreenAdjuster
+        showScreenAdjuster={showScreenAdjuster}
+        adjustScreen={adjustScreen}
+        setAdjustScreen={setAdjustScreen}
+      />
       <div className="row mt-5 p-2">
-        <div className="col-8 customscrollbar mappingscontainer">
+        <div
+          className={`${
+            adjustScreen === 2 ? "col" : adjustScreen === 1 ? "col-8" : "d-none"
+          } "customscrollbar mappingscontainer`}
+        >
           <CreateMappingModal
             key={uuidv4()}
             defaultPayload={mappingsPayload}
@@ -276,37 +368,98 @@ const SureifyObjectMappings = ({ $, Popper }) => {
           {parentIds.map((id) => {
             return (
               <div className="parentcontainer">
-                <div className="row mt-2">
-                  <div className="col">
-                    <h3>Parent ID: {id}</h3>
-                  </div>
-                  <div className="col">
-                    <input
-                      type="button"
-                      className="form-control btn-danger"
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  spacing={2}
+                  sx={{
+                    marginTop: "5px",
+                    backgroundColor: "black",
+                    borderRadius: "5px",
+                  }}
+                >
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="flex-start"
+                    spacing={2}
+                  >
+                    <Typography component="div">
+                      <Box
+                        sx={{
+                          color: grey[50],
+                          fontStyle: "normal",
+                          textAlign: "left",
+                          fontWeight: "bold",
+                          fontSize: "h5.fontSize",
+                          fontFamily: "Monospace",
+                          m: 1,
+                        }}
+                      >
+                        Parent ID: {id}
+                        <Badge
+                          color="warning"
+                          badgeContent={
+                            mappings.filter(
+                              (mapping) => mapping.parent_idx === id
+                            ).length
+                          }
+                        >
+                          <InfoOutlined color="action" />
+                        </Badge>
+                      </Box>
+                    </Typography>
+                  </Stack>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="flex-end"
+                    spacing={2}
+                    paddingRight={2}
+                  >
+                    <Button
+                      variant="contained"
+                      color="primary"
                       onClick={() => {
                         setToggleContainers({
                           ...toggleContainers,
                           [id]: !toggleContainers[id],
                         });
                       }}
-                      value={toggleContainers[id] ? "Expand" : "Collapse"}
-                    />
-                  </div>
-                  <div className="col">
-                    <input
+                      sx={{
+                        backgroundColor: deepPurple[900],
+                        "&:hover": {
+                          backgroundColor: deepPurple[800],
+                        },
+                      }}
+                      endIcon={
+                        toggleContainers[id] ? <ExpandMore /> : <ExpandLess />
+                      }
+                    >
+                      {toggleContainers[id] ? "Expand" : "Collapse"}
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="success"
                       onClick={() => {
                         openCreateModal({
                           ...newMappingDefaultPayload,
                           parent_idx: id,
                         });
                       }}
-                      type="button"
-                      className="form-control btn-danger"
-                      value="Create"
-                    />
-                  </div>
-                </div>
+                      sx={{
+                        backgroundColor: deepPurple[900],
+                        "&:hover": {
+                          backgroundColor: deepPurple[800],
+                        },
+                      }}
+                      endIcon={<Add />}
+                    >
+                      Create
+                    </Button>
+                  </Stack>
+                </Stack>
                 <div className="row">
                   <div className="col">
                     {toggleContainers[id]
@@ -331,7 +484,11 @@ const SureifyObjectMappings = ({ $, Popper }) => {
             );
           })}
         </div>
-        <div className="col-4 customscrollbar responsecontainer">
+        <div
+          className={`${
+            adjustScreen === 0 ? "col" : adjustScreen === 1 ? "col-4" : "d-none"
+          } customscrollbar responsecontainer`}
+        >
           <CDSResponse data={response} />
         </div>
       </div>
