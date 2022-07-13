@@ -219,6 +219,21 @@ const SureifyObjectMappings = ({ $, Popper }) => {
         <div className="col">
           <input
             className="form-control btn-success"
+            id="create_mapping_button"
+            name="create_mapping_button"
+            type="button"
+            onClick={() => {
+              openCreateModal({
+                ...newMappingDefaultPayload,
+                parent_idx: 0,
+              });
+            }}
+            value="Create"
+          />
+        </div>
+        <div className="col">
+          <input
+            className="form-control btn-success"
             id="clone_all_button"
             name="clone_all_button"
             type="button"

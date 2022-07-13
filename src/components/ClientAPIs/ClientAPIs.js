@@ -173,6 +173,21 @@ const ClientAPIs = ({ $, Popper }) => {
         <div className="col">
           <input
             className="form-control btn-success"
+            id="create_clientapi_button"
+            name="create_clientapi_button"
+            type="button"
+            onClick={() => {
+              openCreateModal({
+                ...newAPIDefaultPayload,
+                client_data_source_id: uuidv4(),
+              });
+            }}
+            value="Create"
+          />
+        </div>
+        <div className="col">
+          <input
+            className="form-control btn-success"
             id="get_mappings_button"
             name="get_mappings_button"
             type="button"
