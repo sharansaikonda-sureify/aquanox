@@ -3,9 +3,6 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-// Styles
-import "./SureifyObjectMappings.css";
-
 // Custom Components
 import ObjectMapping from "../ObjectMapping/ObjectMapping";
 import CDSResponse from "../CDSResponse/CDSResponse";
@@ -18,6 +15,7 @@ import { SureifyObjectMapping } from "../../constants/som";
 import CallCDSModal from "../CallCDSModal/CallCDSModal";
 import CreateMappingModal from "../CreateMappingModal/CreateMappingModal";
 import GenerateMappingsModal from "../GenerateMappingsModal/GenerateMappingsModal";
+import ErrorHandlerModal from "../ErrorHandlerModal/ErrorHandlerModal";
 
 // Helper functions
 import { v4 as uuidv4 } from "uuid";
@@ -77,6 +75,10 @@ const SureifyObjectMappings = ({ $, Popper }) => {
   // 2 - Complete Right
   const [showScreenAdjuster, setShowScreenAdjuster] = useState(false);
   const [adjustScreen, setAdjustScreen] = useState(1);
+
+
+  const [apiError, setApiError] = useState(new Error());
+  const [showErrorModal, setShowErrorModal] = useState(false);
 
   const [mappings, setMappings] = useState([]);
   const [cdsId, setCdsId] = useState(0);
@@ -156,7 +158,8 @@ const SureifyObjectMappings = ({ $, Popper }) => {
       setToggleContainers(togCont);
       setMappings(data);
     } catch (e) {
-      alert("Cannot fetch mappings for the given id: " + cdsId);
+      setShowErrorModal(true);
+      setApiError(e);
     }
   };
 
@@ -170,11 +173,8 @@ const SureifyObjectMappings = ({ $, Popper }) => {
       fetchMappings();
       handleClose(true);
     } catch (e) {
-      alert(
-        e.message ||
-          e.response?.data?.errors ||
-          "Some error occured while updating..."
-      );
+      setShowErrorModal(true);
+      setApiError(e);
     }
   };
 
@@ -217,12 +217,18 @@ const SureifyObjectMappings = ({ $, Popper }) => {
       });
       setResponse(resp.data);
     } catch (e) {
-      alert("Cannot fetch response for the given id: " + cdsId);
+      setShowErrorModal(true);
+      setApiError(e);
     }
   };
 
   return (
     <div className="container-fluid">
+      <ErrorHandlerModal
+        showModal={showErrorModal}
+        setShowModal={setShowErrorModal}
+        error={apiError}
+      />
       <GenerateMappingsModal
         key={uuidv4()}
         closeModal={closeGenerateModal}
@@ -470,6 +476,8 @@ const SureifyObjectMappings = ({ $, Popper }) => {
                           .map((mapping) => {
                             return (
                               <ObjectMapping
+                                setShowErrorModal={setShowErrorModal}
+                                setApiError={setApiError}
                                 cloneMappings={cloneMappings}
                                 key={mapping.unique_id}
                                 cdsId={cdsId}

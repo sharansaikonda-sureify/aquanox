@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import constants from "../../constants/constants";
-import "./ClientAPIs.css";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { ClientAPI } from "../../constants/clientapi";

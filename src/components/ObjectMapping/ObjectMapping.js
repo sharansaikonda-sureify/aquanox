@@ -1,19 +1,35 @@
+// Packages
 import axios from "axios";
 import React, { useState } from "react";
+
+// Custom Objects
 import constants from "../../constants/constants";
 import { SureifyObjectMapping } from "../../constants/som";
+
+// Custom Compoonents
+import SelectTextFieldCombo from "../../ui-elements/SelectTextFieldCombo/SelectTextFieldCombo";
+import CustomTextField from "../../ui-elements/CustomTextField/CustomTextField";
+import CustomTextArea from "../../ui-elements/CustomTextArea/CustomTextArea";
+import CustomSelect from "../../ui-elements/CustomSelect/CustomSelect";
+
+// Helper Functions
 import { GetTokensData } from "../../constants/utils";
-import "./ObjectMapping.css";
+import Ctabar from "../../ui-elements/Ctabar/Ctabar";
 
 const ObjectMapping = ({
+  key,
   mapping,
   cdsId,
   filterMappingsByGroup,
   cloneMappings,
+  setShowErrorModal,
+  setApiError,
 }) => {
+  // UseState
   const [data, setData] = useState(new SureifyObjectMapping(mapping));
   const [isLocked, setIsLocked] = useState(true);
 
+  // Functions
   const changeHandler = (e) => {
     let newkey = e.target.name;
     let newvalue = e.target.value;
@@ -29,11 +45,8 @@ const ObjectMapping = ({
         headers: tokens,
       });
     } catch (e) {
-      alert(
-        e.message ||
-          e.response?.data?.errors ||
-          "Some error occured while updating..."
-      );
+      setApiError(e);
+      setShowErrorModal(true);
     }
   };
 
@@ -46,280 +59,144 @@ const ObjectMapping = ({
       });
       filterMappingsByGroup(data.mapping_id);
     } catch (e) {
-      alert(
-        e.message ||
-          e.response?.data?.errors ||
-          "Some error occured while updating..."
-      );
+      setApiError(e);
+      setShowErrorModal(true);
     }
   };
 
   return (
     <div className="container">
-      <div className="row mt-2">
-        <div className="col">
-          <input
-            type="button"
-            className="form-control btn-danger"
-            value={isLocked ? "Unlock" : "Lock"}
-            onClick={() => {
-              setIsLocked(!isLocked);
-            }}
-          />
-        </div>
-      </div>
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="data_type">
-            Data Type
-          </label>
-        </div>
-        <div className="col">
-          <select
-            defaultValue={data.data_type}
-            className=" form-select"
-            onChange={(e) => {
-              changeHandler(e);
-            }}
-            disabled={isLocked}
-            name="data_type"
-          >
-            {constants.MAPPINGS_DATA_TYPE.map((type) => {
-              return <option value={type}>{type}</option>;
-            })}
-          </select>
-        </div>
-      </div>
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="extra">
-            Extra
-          </label>
-        </div>
-        <div className="col">
-          <input
-            className=" form-control"
-            disabled={isLocked}
-            onChange={(e) => {
-              changeHandler(e);
-            }}
-            type="text"
-            name="extra"
-            value={data.extra}
-          />
-        </div>
-      </div>
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="field_source">
-            Field Source
-          </label>
-        </div>
-        <div className="col">
-          {data.field_source !== "" &&
+      <CustomSelect
+        key={"data_type" + key}
+        data={data}
+        setData={setData}
+        labelName="Data Type"
+        selectId="data_type"
+        helperText="Choose one of the datatypes from the dropdown"
+        isLocked={isLocked}
+        changeHandler={changeHandler}
+        dropDownMap={constants.MAPPINGS_DATA_TYPE}
+      />
+
+      <CustomTextField
+        key={"extra" + key}
+        data={data}
+        setData={setData}
+        labelName="Extra"
+        textFieldId="extra"
+        helperText="extra is a json object passed along with attrbute for the given mapping"
+        isLocked={isLocked}
+        changeHandler={changeHandler}
+      />
+
+      <SelectTextFieldCombo
+        key={"field_source" + key}
+        data={data}
+        setData={setData}
+        labelId="field_source_label"
+        labelName="Field Source"
+        selectId="field_source"
+        helperText="Choose one from the dropdown or other for manual entry"
+        isLocked={isLocked}
+        changeHandler={changeHandler}
+        switchCondition={
+          data.field_source !== "" &&
           (data.field_source.includes("api") ||
             data.field_source === "other" ||
             constants.MAPPINGS_FIELD_SOURCE.every(
               (row) => row !== data.field_source
-            )) ? (
-            <input
-              disabled={isLocked}
-              onChange={(e) => {
-                changeHandler(e);
-              }}
-              className=" form-control"
-              type="text"
-              name="field_source"
-              value={data.field_source}
-            />
-          ) : (
-            <select
-              defaultValue={data.field_source}
-              disabled={isLocked}
-              onChange={(e) => {
-                changeHandler(e);
-              }}
-              className=" form-select"
-              name="field_source"
-              id="field_source"
-            >
-              {constants.MAPPINGS_FIELD_SOURCE.map((field_source) => {
-                return <option value={field_source}>{field_source}</option>;
-              })}
-            </select>
-          )}
-        </div>
-      </div>
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="post_op_config">
-            Post Op Config
-          </label>
-        </div>
-        <div className="col">
-          <textarea
-            disabled={isLocked}
-            onChange={(e) => {
-              changeHandler(e);
-            }}
-            className=" form-control"
-            name="post_op_config"
-            value={data.post_op_config}
-          />
-        </div>
-      </div>
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="formatter">
-            Formatter
-          </label>
-        </div>
-        <div className="col">
-          <textarea
-            disabled={isLocked}
-            onChange={(e) => {
-              changeHandler(e);
-            }}
-            className=" form-control"
-            name="formatter"
-            value={data.formatter}
-          />
-        </div>
-      </div>
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="mapping_id">
-            Mapping Id
-          </label>
-        </div>
-        <div className="col">
-          <input
-            disabled
-            onChange={(e) => {
-              changeHandler(e);
-            }}
-            className=" form-control"
-            type="text"
-            name="mapping_id"
-            value={data.mapping_id}
-          />
-        </div>
-      </div>
+            ))
+        }
+        dropDownMap={constants.MAPPINGS_FIELD_SOURCE}
+      />
 
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="parent_idx">
-            Parent Idx
-          </label>
-        </div>
-        <div className="col">
-          <input
-            disabled={isLocked}
-            onChange={(e) => {
-              changeHandler(e);
-            }}
-            className=" form-control"
-            type="text"
-            name="parent_idx"
-            value={data.parent_idx}
-          />
-        </div>
-      </div>
+      <CustomTextArea
+        key={"post_op_config" + key}
+        data={data}
+        setData={setData}
+        labelName="Post OP Config"
+        textAreaId="post_op_config"
+        helperText="JSON object for post op configuration for a given attribute"
+        isLocked={isLocked}
+        changeHandler={changeHandler}
+      />
 
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="sureify_field_name">
-            Sureify Field Name
-          </label>
-        </div>
-        <div className="col">
-          <input
-            className=" form-control"
-            disabled={isLocked}
-            onChange={(e) => {
-              changeHandler(e);
-            }}
-            type="text"
-            name="sureify_field_name"
-            value={data.sureify_field_name}
-          />
-        </div>
-      </div>
+      <CustomTextArea
+        key={"formatter" + key}
+        data={data}
+        setData={setData}
+        labelName="Formatter"
+        textAreaId="formatter"
+        helperText="JSON object for formatting the given attribute"
+        isLocked={isLocked}
+        changeHandler={changeHandler}
+      />
 
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="txn_key">
-            Transaction Key
-          </label>
-        </div>
-        <div className="col">
-          <input
-            className=" form-control"
-            disabled={isLocked}
-            onChange={(e) => {
-              changeHandler(e);
-            }}
-            type="text"
-            name="txn_key"
-            value={data.txn_key}
-          />
-        </div>
-      </div>
+      <CustomTextField
+        key={"mapping_id" + key}
+        data={data}
+        setData={setData}
+        labelName="Mapping ID"
+        textFieldId="mapping_id"
+        helperText="UUID for a given mapping or number if existing"
+        isLocked={isLocked}
+        changeHandler={changeHandler}
+      />
 
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="txn_source">
-            Transaction Source
-          </label>
-        </div>
-        <div className="col">
-          <select
-            defaultValue={data.txn_source}
-            className=" form-control form-select"
-            disabled={isLocked}
-            onChange={(e) => {
-              changeHandler(e);
-            }}
-            name="txn_source"
-            id="txn_source"
-          >
-            {constants.MAPPINGS_TXN_SOURCE.map((txn_source) => {
-              return <option value={txn_source}>{txn_source}</option>;
-            })}
-          </select>
-        </div>
-      </div>
-      <div className="row mt-2">
-        <div className="col">
-          <input
-            type="button"
-            disabled={isLocked}
-            className="form-control btn-danger"
-            value="Update"
-            onClick={updateMapping}
-          />
-        </div>
-        <div className="col">
-          <input
-            type="button"
-            disabled={isLocked}
-            className="form-control btn-danger"
-            value="Delete"
-            onClick={deleteMapping}
-          />
-        </div>
-        <div className="col">
-          <input
-            type="button"
-            disabled={isLocked}
-            className="form-control btn-danger"
-            value="Clone"
-            onClick={() => {
-              cloneMappings(data);
-            }}
-          />
-        </div>
-      </div>
+      <CustomTextField
+        key={"parent_idx" + key}
+        data={data}
+        setData={setData}
+        labelName="Parent Idx"
+        textFieldId="parent_idx"
+        helperText="The group in which the current mapping should exist"
+        isLocked={isLocked}
+        changeHandler={changeHandler}
+      />
+
+      <CustomTextField
+        key={"sureify_field_name" + key}
+        data={data}
+        setData={setData}
+        labelName="Sureify Field name"
+        textFieldId="sureify_field_name"
+        helperText="Name of the given attribute if field_source is response otherwise input attribute name"
+        isLocked={isLocked}
+        changeHandler={changeHandler}
+      />
+
+      <CustomTextField
+        key={"txn_key" + key}
+        data={data}
+        setData={setData}
+        labelName="Transaction Key"
+        textFieldId="txn_key"
+        helperText="Attribute name from client API response"
+        isLocked={isLocked}
+        changeHandler={changeHandler}
+      />
+
+      <CustomSelect
+        key={"txn_source" + key}
+        data={data}
+        setData={setData}
+        labelName="Transaction Source"
+        selectId="txn_source"
+        helperText="Choose one of the txn_sources from the dropdown"
+        isLocked={isLocked}
+        changeHandler={changeHandler}
+        dropDownMap={constants.MAPPINGS_TXN_SOURCE}
+      />
+
+      <Ctabar
+        key={"cta_bar" + key}
+        isLocked={isLocked}
+        setIsLocked={setIsLocked}
+        data={data}
+        deleteData={deleteMapping}
+        updateData={updateMapping}
+        cloneData={cloneMappings}
+      />
     </div>
   );
 };

@@ -2,7 +2,6 @@ import axios from "axios";
 import React, { useState } from "react";
 import constants from "../../constants/constants";
 import { ClientAPI } from "../../constants/clientapi";
-import "./ClientAPIObjectMapping.css";
 import { GetTokensData } from "../../constants/utils";
 
 const ClientAPIObjectMapping = ({ mapping, cloneMappings, clientAPIId }) => {
