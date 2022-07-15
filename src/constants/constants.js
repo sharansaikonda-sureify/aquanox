@@ -18,7 +18,14 @@ const constants = {
         : JSON.parse(localStorage.getItem("tokens"))["base_url"];
     return this.BASE_URL + this.PLUTO_PATH + this.CLIENT_APIS;
   },
-  MAPPINGS_DATA_TYPE: ["array", "string", "object", "number", "generic"],
+  MAPPINGS_DATA_TYPE: [
+    "array",
+    "string",
+    "object",
+    "number",
+    "generic",
+    "boolean",
+  ],
   MAPPINGS_FIELD_SOURCE: [
     "url",
     "input",

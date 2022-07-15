@@ -19,21 +19,27 @@ import Ctabar from "../../ui-elements/Ctabar/Ctabar";
 const ObjectMapping = ({
   key,
   mapping,
+  setMappings,
   cdsId,
   filterMappingsByGroup,
   cloneMappings,
   setShowErrorModal,
   setApiError,
+  isShowCtaBar = false,
+  shouldLockFields = true,
 }) => {
   // UseState
   const [data, setData] = useState(new SureifyObjectMapping(mapping));
-  const [isLocked, setIsLocked] = useState(true);
+  const [isLocked, setIsLocked] = useState(shouldLockFields);
 
   // Functions
   const changeHandler = (e) => {
     let newkey = e.target.name;
     let newvalue = e.target.value;
     let newData = new SureifyObjectMapping({ ...data, [newkey]: newvalue });
+    if (!isShowCtaBar) {
+      setMappings(newData);
+    }
     setData(newData);
   };
 
@@ -139,7 +145,7 @@ const ObjectMapping = ({
         labelName="Mapping ID"
         textFieldId="mapping_id"
         helperText="UUID for a given mapping or number if existing"
-        isLocked={isLocked}
+        isLocked={true}
         changeHandler={changeHandler}
       />
 
@@ -188,15 +194,19 @@ const ObjectMapping = ({
         dropDownMap={constants.MAPPINGS_TXN_SOURCE}
       />
 
-      <Ctabar
-        key={"cta_bar" + key}
-        isLocked={isLocked}
-        setIsLocked={setIsLocked}
-        data={data}
-        deleteData={deleteMapping}
-        updateData={updateMapping}
-        cloneData={cloneMappings}
-      />
+      {isShowCtaBar ? (
+        <Ctabar
+          key={"cta_bar" + key}
+          isLocked={isLocked}
+          setIsLocked={setIsLocked}
+          data={data}
+          deleteData={deleteMapping}
+          updateData={updateMapping}
+          cloneData={cloneMappings}
+        />
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

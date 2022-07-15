@@ -483,6 +483,7 @@ const SureifyObjectMappings = ({ $, Popper }) => {
                                 cdsId={cdsId}
                                 mapping={mapping}
                                 filterMappingsByGroup={filterMappingsByGroup}
+                                isShowCtaBar={true}
                               />
                             );
                           })}
