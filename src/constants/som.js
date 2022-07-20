@@ -1,5 +1,18 @@
 import { v4 as uuidv4 } from "uuid";
 
+export const defaultPayload = {
+  data_type: "string",
+  extra: null,
+  field_source: "response",
+  formatter: "{}",
+  post_op_config: "{}",
+  mapping_id: uuidv4(),
+  parent_idx: 0,
+  sureify_field_name: "",
+  txn_key: "",
+  txn_source: "res",
+};
+
 export function SureifyObjectMapping({
   data_type,
   extra,
@@ -29,8 +42,8 @@ export function SureifyObjectMapping({
   this.sureify_field_name = sureify_field_name;
   this.txn_key = txn_key;
   this.txn_source = txn_source;
-  this.unique_id = uuidv4();
-
+  this.unique_id = this.mapping_id + "_mapping_id";
+  // console.log(this.unique_id);
   this.field_source = field_source;
 
   this.extra = extra;

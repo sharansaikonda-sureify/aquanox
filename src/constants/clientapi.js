@@ -29,7 +29,7 @@ export function ClientAPI({
   this.cache_time = parseInt(cache_time);
 
   this.session_less = session_less;
-  if (session_less === "true") {
+  if (session_less === "true" || session_less === true) {
     this.session_less = "true";
   } else {
     this.session_less = "false";

@@ -11,7 +11,7 @@ import { GetTokensData } from "../../constants/utils";
 const ClientAPIs = ({ $, Popper }) => {
   const customErrorCodesDefaultSchema = {
     condition: {
-      response: "",
+      response: {},
       status_codes: ["xxx"],
     },
     is_success: false,
@@ -26,10 +26,10 @@ const ClientAPIs = ({ $, Popper }) => {
     clear_api_caches: [],
     client_data_source_uuid: uuidv4(),
     custom_error_codes: [customErrorCodesDefaultSchema],
-    headers: [],
+    headers: [{ key: "Content-Type", value: "application/json" }],
     name: "",
     no_cache_keys: [],
-    params: [{ key: "Content-Type", value: "application/json" }],
+    params: [],
     session_less: false,
     ssl_cert: ["", ""],
     type: "GET",

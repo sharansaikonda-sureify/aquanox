@@ -16,86 +16,73 @@ import { Button, Stack } from "@mui/material";
 
 // Material UI Colors
 
-const CreateMappingModal = ({
-  closeModal,
-  show,
-  createNewMappings,
-  cdsId,
-  defaultPayload,
-  setShowErrorModal,
-  setApiError,
-}) => {
-  const [data, setData] = useState(new SureifyObjectMapping(defaultPayload));
+const CreateMappingModal = React.memo(
+  ({ createNewMappings, createMappingState, closeModal, setErrorState }) => {
+    const [data, setData] = useState(
+      new SureifyObjectMapping(createMappingState.mapping)
+    );
 
-  useEffect(() => {
-    setData(new SureifyObjectMapping(defaultPayload));
-  }, [defaultPayload]);
+    // Reset state when modal is closed
+    useEffect(() => {
+      setData(new SureifyObjectMapping(createMappingState.mapping));
+    }, [createMappingState.mapping]);
 
-  const handleClose = (isClear) => {
-    if (isClear) {
-      setData(new SureifyObjectMapping(defaultPayload));
-    }
-    closeModal();
-  };
-
-  return (
-    <Modal
-      size="xl"
-      show={show}
-      onHide={() => {
-        handleClose(true);
-      }}
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>JSON Payload</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <ObjectMapping
-          key={data.mapping_id}
-          mapping={data}
-          setMappings={setData}
-          cdsId={cdsId}
-          filterMappingsByGroup={() => {}}
-          cloneMappings={() => {}}
-          setShowErrorModal={setShowErrorModal}
-          setApiError={setApiError}
-          shouldLockFields={false}
-        />
-      </Modal.Body>
-      <Modal.Footer>
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          spacing={2}
-          marginTop="15px"
-          paddingRight={2}
-        >
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => {
-              handleClose(true);
-            }}
-            endIcon={<Close />}
+    console.count("Create Mapping Modal");
+    return (
+      <Modal size="xl" show={createMappingState.showModal} onHide={closeModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>JSON Payload</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ObjectMapping
+            key={"object_mapping" + data.mapping_id}
+            objectKey={"object_mapping" + data.mapping_id}
+            mapping={data}
+            setMapping={setData}
+            cdsId={createMappingState.cdsId}
+            filterMappingsByGroup={() => {}}
+            cloneMappings={() => {}}
+            setErrorState={setErrorState}
+            isShowCtaBar={false}
+            shouldLockFields={false}
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            spacing={2}
+            marginTop="15px"
+            paddingRight={2}
           >
-            Close
-          </Button>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={closeModal}
+              endIcon={<Close />}
+            >
+              Close
+            </Button>
 
-          <Button
-            variant="contained"
-            color="success"
-            onClick={() => {
-              createNewMappings(data.getPostMappings(cdsId), handleClose);
-            }}
-            endIcon={<Check />}
-          >
-            Create
-          </Button>
-        </Stack>
-      </Modal.Footer>
-    </Modal>
-  );
-};
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => {
+                createNewMappings(
+                  data.getPostMappings(createMappingState.cdsId),
+                  closeModal
+                );
+              }}
+              endIcon={<Check />}
+            >
+              Create
+            </Button>
+          </Stack>
+        </Modal.Footer>
+      </Modal>
+    );
+  }
+);
 
 export default CreateMappingModal;

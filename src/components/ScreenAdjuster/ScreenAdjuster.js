@@ -14,12 +14,8 @@ import {
   ArrowRightOutlined,
 } from "@mui/icons-material";
 
-const ScreenAdjuster = ({
-  showScreenAdjuster,
-  adjustScreen,
-  setAdjustScreen,
-}) => {
-  if (showScreenAdjuster) {
+const ScreenAdjuster = ({ screenAdjusterState, setScreenAdjusterState }) => {
+  if (screenAdjusterState.show) {
     return (
       <div
         className="row fixed-top"
@@ -35,15 +31,19 @@ const ScreenAdjuster = ({
             variant="contained"
             sx={{
               backgroundColor:
-                adjustScreen === 0 ? deepOrange[900] : yellow[900],
+                screenAdjusterState.position === 0
+                  ? deepOrange[900]
+                  : yellow[900],
               "&:hover": {
                 backgroundColor:
-                  adjustScreen === 0 ? deepOrange[800] : yellow[800],
+                  screenAdjusterState.position === 0
+                    ? deepOrange[800]
+                    : yellow[800],
               },
             }}
             endIcon={<ArrowLeftOutlined />}
             onClick={() => {
-              setAdjustScreen(0);
+              setScreenAdjusterState({ ...screenAdjusterState, position: 0 });
             }}
           ></Button>
 
@@ -51,15 +51,19 @@ const ScreenAdjuster = ({
             variant="contained"
             sx={{
               backgroundColor:
-                adjustScreen === 1 ? deepOrange[900] : yellow[900],
+                screenAdjusterState.position === 1
+                  ? deepOrange[900]
+                  : yellow[900],
               "&:hover": {
                 backgroundColor:
-                  adjustScreen === 1 ? deepOrange[800] : yellow[800],
+                  screenAdjusterState.position === 1
+                    ? deepOrange[800]
+                    : yellow[800],
               },
             }}
             endIcon={<AdjustOutlined />}
             onClick={() => {
-              setAdjustScreen(1);
+              setScreenAdjusterState({ ...screenAdjusterState, position: 1 });
             }}
           ></Button>
 
@@ -67,14 +71,18 @@ const ScreenAdjuster = ({
             variant="contained"
             sx={{
               backgroundColor:
-                adjustScreen === 2 ? deepOrange[900] : yellow[900],
+                screenAdjusterState.position === 2
+                  ? deepOrange[900]
+                  : yellow[900],
               "&:hover": {
                 backgroundColor:
-                  adjustScreen === 2 ? deepOrange[800] : yellow[800],
+                  screenAdjusterState.position === 2
+                    ? deepOrange[800]
+                    : yellow[800],
               },
             }}
             onClick={() => {
-              setAdjustScreen(2);
+              setScreenAdjusterState({ ...screenAdjusterState, position: 2 });
             }}
             endIcon={<ArrowRightOutlined />}
           ></Button>

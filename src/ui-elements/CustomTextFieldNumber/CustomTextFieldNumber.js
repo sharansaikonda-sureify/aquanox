@@ -4,23 +4,22 @@ import React from "react";
 // Material UI Components
 import { FormHelperText, FormControl, TextField } from "@mui/material";
 
-const CustomTextArea = ({
+const CustomTextFieldNumber = ({
   data,
   labelName,
-  textAreaId,
+  textFieldId,
+  changeHandler,
   helperText,
   isLocked,
-  changeHandler,
 }) => {
   return (
     <FormControl sx={{ m: 1, minWidth: "100%" }}>
       <TextField
-        multiline={true}
-        maxRows={100}
-        id={textAreaId}
-        name={textAreaId}
+        id={textFieldId}
+        name={textFieldId}
+        type="number"
         label={labelName}
-        value={data[textAreaId]}
+        value={data[textFieldId]}
         onChange={changeHandler}
         disabled={isLocked}
       />
@@ -29,4 +28,4 @@ const CustomTextArea = ({
   );
 };
 
-export default CustomTextArea;
+export default CustomTextFieldNumber;

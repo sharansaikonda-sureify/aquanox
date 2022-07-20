@@ -1,5 +1,5 @@
 // Packages
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 // Material UI Components
 import Box from "@mui/material/Box";
@@ -19,23 +19,27 @@ const style = {
   p: 4,
 };
 
-const ErrorHandlerModal = ({ error, showModal, setShowModal }) => {
+const ErrorHandlerModal = React.memo(({ errorState, setErrorState }) => {
   // useState
   const [text, setText] = useState("");
 
   // useEffect
   useEffect(() => {
-    setText(error.response?.data?.errors || error.message || "");
-  }, [error]);
+    setText(
+      errorState.error?.response?.data?.errors ||
+        errorState.error?.message ||
+        ""
+    );
+  }, [errorState]);
 
   // Functions
   const handleClose = () => {
-    setShowModal(false);
+    setErrorState({ ...errorState, showModal: false });
   };
 
   return (
     <div>
-      <Modal keepMounted open={showModal} onClose={handleClose}>
+      <Modal keepMounted open={errorState.showModal} onClose={handleClose}>
         <Box sx={style}>
           <Typography id="keep-mounted-modal-title" variant="h6" component="h2">
             <b>Error during Operation!!!</b>
@@ -46,12 +50,15 @@ const ErrorHandlerModal = ({ error, showModal, setShowModal }) => {
             <br />
             <b>Details:</b>
             <br />
-            <p>{text}</p>
+          </Typography>
+          <Typography id="keep-mounted-modal-description" sx={{ mt: 2 }}>
+            An error occured while performing the given operation.
+            {text}
           </Typography>
         </Box>
       </Modal>
     </div>
   );
-};
+});
 
 export default ErrorHandlerModal;

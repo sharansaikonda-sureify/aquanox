@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 
 const SelectTextFieldCombo = ({
+  objectKey,
   data,
   labelId,
   labelName,
@@ -26,6 +27,7 @@ const SelectTextFieldCombo = ({
     return (
       <FormControl sx={{ m: 1, minWidth: "100%" }}>
         <TextField
+          key={"text_field" + objectKey}
           id={selectId}
           name={selectId}
           label={labelName}
@@ -42,6 +44,7 @@ const SelectTextFieldCombo = ({
     <FormControl sx={{ m: 1, minWidth: "100%" }}>
       <InputLabel id={labelId}>{labelName}</InputLabel>
       <Select
+        key={"select" + objectKey}
         labelId={labelId}
         id={selectId}
         name={selectId}
@@ -51,8 +54,12 @@ const SelectTextFieldCombo = ({
         onChange={changeHandler}
         disabled={isLocked}
       >
-        {dropDownMap.map((value) => {
-          return <MenuItem value={value}>{value}</MenuItem>;
+        {dropDownMap.map((value, idx) => {
+          return (
+            <MenuItem key={"menuitem-" + idx + objectKey} value={value}>
+              {value}
+            </MenuItem>
+          );
         })}
       </Select>
 
