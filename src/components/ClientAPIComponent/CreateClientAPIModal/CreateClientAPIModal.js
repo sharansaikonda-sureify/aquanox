@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 
 import { Button, Modal } from "react-bootstrap";
-import { ClientAPI } from "../../constants/clientapi";
-import constants from "../../constants/constants";
+import { ClientAPI } from "../../../constants/clientapi";
+import constants from "../../../constants/constants";
 
 const CreateClientAPIModal = ({
   closeModal,
