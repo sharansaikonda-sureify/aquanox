@@ -43,7 +43,6 @@ export function SureifyObjectMapping({
   this.txn_key = txn_key;
   this.txn_source = txn_source;
   this.unique_id = this.mapping_id + "_mapping_id";
-  // console.log(this.unique_id);
   this.field_source = field_source;
 
   this.extra = extra;

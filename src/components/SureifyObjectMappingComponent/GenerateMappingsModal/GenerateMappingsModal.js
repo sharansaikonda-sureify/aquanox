@@ -99,7 +99,7 @@ const CreateMappingModal = React.memo(
         row.field_source = row.field_source.replaceAll(
           /api\.(.*?)$/g,
           (a, b) => {
-            return `api.${fileData.apiIds[parseInt(b)]},`;
+            return `api.${fileData.apiIds[parseInt(b)]}`;
           }
         );
 
