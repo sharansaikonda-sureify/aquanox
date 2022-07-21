@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 
 // Custom Objects
-import { SureifyObjectMapping } from "../../constants/som";
+import { SureifyObjectMapping } from "../../../constants/som";
 
 // Custom Components
 import ObjectMapping from "../ObjectMapping/ObjectMapping";

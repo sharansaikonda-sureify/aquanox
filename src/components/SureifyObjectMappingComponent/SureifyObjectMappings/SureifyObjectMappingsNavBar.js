@@ -20,8 +20,6 @@ import {
   Home,
   ScheduleSend,
   Search,
-  ToggleOff,
-  ToggleOn,
 } from "@mui/icons-material";
 
 // Material UI Colors
@@ -33,7 +31,7 @@ import CreateMappingModal from "../CreateMappingModal/CreateMappingModal";
 import CallCDSModal from "../CallCDSModal/CallCDSModal";
 
 // Custom Objects
-import { SureifyObjectMapping, defaultPayload } from "../../constants/som";
+import { SureifyObjectMapping, defaultPayload } from "../../../constants/som";
 
 const SureifyObjectMappingsNavBar = React.memo(
   ({

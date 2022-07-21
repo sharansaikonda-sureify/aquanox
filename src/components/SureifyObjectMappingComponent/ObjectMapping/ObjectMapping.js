@@ -3,18 +3,18 @@ import axios from "axios";
 import React, { useState } from "react";
 
 // Custom Objects
-import constants from "../../constants/constants";
-import { SureifyObjectMapping } from "../../constants/som";
+import constants from "../../../constants/constants";
+import { SureifyObjectMapping } from "../../../constants/som";
 
 // Custom Compoonents
-import SelectTextFieldCombo from "../../ui-elements/SelectTextFieldCombo/SelectTextFieldCombo";
-import CustomTextField from "../../ui-elements/CustomTextField/CustomTextField";
-import CustomTextArea from "../../ui-elements/CustomTextArea/CustomTextArea";
-import CustomSelect from "../../ui-elements/CustomSelect/CustomSelect";
+import SelectTextFieldCombo from "../../../ui-elements/SelectTextFieldCombo/SelectTextFieldCombo";
+import CustomTextField from "../../../ui-elements/CustomTextField/CustomTextField";
+import CustomTextArea from "../../../ui-elements/CustomTextArea/CustomTextArea";
+import CustomSelect from "../../../ui-elements/CustomSelect/CustomSelect";
 
 // Helper Functions
-import { GetTokensData } from "../../constants/utils";
-import Ctabar from "../../ui-elements/Ctabar/Ctabar";
+import { GetTokensData } from "../../../constants/utils";
+import Ctabar from "../../../ui-elements/Ctabar/Ctabar";
 
 const ObjectMapping = React.memo(
   ({

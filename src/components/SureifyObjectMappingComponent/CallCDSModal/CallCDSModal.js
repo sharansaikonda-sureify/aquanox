@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
 import { Button, Modal } from "react-bootstrap";
-import CustomTextField from "../../ui-elements/CustomTextField/CustomTextField";
-import { defaultPayload, JSONPayload } from "../../constants/callcds";
+import CustomTextField from "../../../ui-elements/CustomTextField/CustomTextField";
+import { defaultPayload, JSONPayload } from "../../../constants/callcds";
 
 const CallCDSModal = React.memo(
   ({ callCdsModalState, setCallCdsModalState, fetchResponse }) => {

@@ -1,5 +1,5 @@
 // Packages
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 
 // Custom Components
@@ -7,16 +7,16 @@ import ObjectMapping from "../ObjectMapping/ObjectMapping";
 import CDSResponse from "../CDSResponse/CDSResponse";
 
 // Custom Objects
-import constants from "../../constants/constants";
-import { SureifyObjectMapping, defaultPayload } from "../../constants/som";
+import constants from "../../../constants/constants";
+import { SureifyObjectMapping, defaultPayload } from "../../../constants/som";
 
 // Modals
 import CreateMappingModal from "../CreateMappingModal/CreateMappingModal";
-import ErrorHandlerModal from "../ErrorHandlerModal/ErrorHandlerModal";
+import ErrorHandlerModal from "../../ErrorHandlerModal/ErrorHandlerModal";
 
 // Helper functions
 import { v4 as uuidv4 } from "uuid";
-import { GetTokensData } from "../../constants/utils";
+import { GetTokensData } from "../../../constants/utils";
 
 // Materuak UI Components
 import { Button, Stack, Badge, Typography, Box } from "@mui/material";
@@ -33,7 +33,7 @@ import {
 } from "@mui/icons-material/";
 
 // Custom Components
-import ScreenAdjuster from "../ScreenAdjuster/ScreenAdjuster";
+import ScreenAdjuster from "../../ScreenAdjuster/ScreenAdjuster";
 import SureifyObjectMappingsNavBar from "./SureifyObjectMappingsNavBar";
 
 const SureifyObjectMappings = ({ $, Popper }) => {

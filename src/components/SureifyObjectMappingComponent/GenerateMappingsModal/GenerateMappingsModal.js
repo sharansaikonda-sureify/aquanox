@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 
 import { Button, Modal } from "react-bootstrap";
 import { v4 as uuidv4 } from "uuid";
-import { SureifyObjectMapping } from "../../constants/som";
-import CustomTextField from "../../ui-elements/CustomTextField/CustomTextField";
-import CustomTextFieldNumber from "../../ui-elements/CustomTextFieldNumber/CustomTextFieldNumber";
+import { SureifyObjectMapping } from "../../../constants/som";
+import CustomTextField from "../../../ui-elements/CustomTextField/CustomTextField";
+import CustomTextFieldNumber from "../../../ui-elements/CustomTextFieldNumber/CustomTextFieldNumber";
 
 const CreateMappingModal = React.memo(
   ({ generateMappingsState, setGenerateMappingsState, mappings }) => {
