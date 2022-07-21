@@ -3,7 +3,14 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Material UI Compionents
-import { Stack, Button, TextField } from "@mui/material";
+import {
+  Stack,
+  Button,
+  TextField,
+  FormControlLabel,
+  FormGroup,
+  Switch,
+} from "@mui/material";
 
 // Material UI Icons
 import {
@@ -13,6 +20,8 @@ import {
   Home,
   ScheduleSend,
   Search,
+  ToggleOff,
+  ToggleOn,
 } from "@mui/icons-material";
 
 // Material UI Colors
@@ -21,10 +30,10 @@ import { yellow } from "@mui/material/colors";
 // Custom Components
 import GenerateMappingsModal from "../GenerateMappingsModal/GenerateMappingsModal";
 import CreateMappingModal from "../CreateMappingModal/CreateMappingModal";
+import CallCDSModal from "../CallCDSModal/CallCDSModal";
 
 // Custom Objects
 import { SureifyObjectMapping, defaultPayload } from "../../constants/som";
-import CallCDSModal from "../CallCDSModal/CallCDSModal";
 
 const SureifyObjectMappingsNavBar = React.memo(
   ({
@@ -61,6 +70,19 @@ const SureifyObjectMappingsNavBar = React.memo(
     });
 
     // Handlers
+    const toggleAllParents = () => {
+      const newTogCont = {};
+      for (const key in mappingsState.toggleContainers) {
+        newTogCont[key] = !mappingsState.isCollapseAll;
+      }
+
+      setMappingsState({
+        ...mappingsState,
+        toggleContainers: newTogCont,
+        isCollapseAll: !mappingsState.isCollapseAll,
+      });
+    };
+
     const openCreateMappingModal = () => {
       setCreateMappingState({
         mapping: new SureifyObjectMapping({
@@ -192,6 +214,18 @@ const SureifyObjectMappingsNavBar = React.memo(
               }}
               value={cdsId}
             />
+
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={mappingsState.isCollapseAll}
+                    onChange={toggleAllParents}
+                  />
+                }
+                label="Show | Hide"
+              />
+            </FormGroup>
             <Button
               variant="contained"
               color="primary"

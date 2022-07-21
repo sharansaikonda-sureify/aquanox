@@ -64,7 +64,7 @@ const ObjectMapping = React.memo(
         await axios.patch(constants.SOM_URL(), jsonData, {
           headers: tokens,
         });
-        filterMappingsByGroup(data.mapping_id);
+        filterMappingsByGroup(data.mapping_id, data.parent_idx);
       } catch (e) {
         setErrorState({ error: e, showModal: true });
       }

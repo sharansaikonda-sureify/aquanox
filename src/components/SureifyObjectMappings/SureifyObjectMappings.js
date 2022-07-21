@@ -41,6 +41,7 @@ const SureifyObjectMappings = ({ $, Popper }) => {
     mappings: [],
     parentIds: [],
     toggleContainers: {},
+    isCollapseAll: true,
   });
 
   const [errorState, setErrorState] = useState({
@@ -67,23 +68,26 @@ const SureifyObjectMappings = ({ $, Popper }) => {
 
   const closeCreateMappingMainModal = () => {
     setCreateMappingMainState({
+      ...createMappingMainState,
       mapping: new SureifyObjectMapping(defaultPayload),
-      cdsId: 0,
       showModal: false,
     });
   };
 
-  const filterMappingsByGroup = (id) => {
+  const filterMappingsByGroup = (mapping_id, parent_idx) => {
     console.log("entered filter mappings by group");
-    const data = mappingsState.mappings.filter((row) => row.mapping_id !== id);
+    const data = mappingsState.mappings.filter(
+      (row) => row.mapping_id !== mapping_id
+    );
     const s = new Set(data.map((row) => row.parent_idx));
     const parentIdList = Array.from(s).sort();
     let togCont = {};
     for (let i = 0; i < parentIdList.length; i++) {
-      togCont[parentIdList[i]] = parseInt(parentIdList[i]) === 0;
+      togCont[parentIdList[i]] = parentIdList[i] !== parent_idx;
     }
 
     setMappingsState({
+      ...mappingsState,
       parentIds: parentIdList,
       toggleContainers: togCont,
       mappings: data,
