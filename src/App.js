@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Dashboard from "./components/Dashboard/Dashboard";
-import SureifyObjectMappings from "./components/SureifyObjectMappings/SureifyObjectMappings";
+import SureifyObjectMappings from "./components/SureifyObjectMappingComponent/SureifyObjectMappings/SureifyObjectMappings";
 import ClientAPIs from "./components/ClientAPIs/ClientAPIs";
 import { v4 as uuidv4 } from "uuid";
 
