@@ -1,19 +1,27 @@
+// Packages
 import React, { useState } from "react";
 import axios from "axios";
-import constants from "../../../constants/constants";
-import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
+
+// Custom Objects
+import constants from "../../../constants/constants";
+import { GetTokensData } from "../../../constants/utils";
+import { ClientAPI, defaultPayload } from "../../../constants/clientapi";
+
+// Custom Components
 import ClientAPIObjectMapping from "../ClientAPIObjectMapping/ClientAPIObjectMapping";
 import CreateClientAPIModal from "../CreateClientAPIModal/CreateClientAPIModal";
-import { GetTokensData } from "../../../constants/utils";
 import ClientAPIsNavBar from "./ClientAPIsNavBar";
 import ErrorHandlerModal from "../../ErrorHandlerModal/ErrorHandlerModal";
 
-import { ClientAPI, defaultPayload } from "../../../constants/clientapi";
-import { ExpandLess, ExpandMore, InfoOutlined } from "@mui/icons-material";
-import { deepPurple, grey } from "@mui/material/colors";
+// Material UI Components
 import { Box, Button, Stack, Typography } from "@mui/material";
-import { Badge } from "react-bootstrap";
+
+// Material UI Colors
+import { deepPurple, grey } from "@mui/material/colors";
+
+// Material UI Icons
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 
 const ClientAPIs = ({ $, Popper }) => {
   // useState
@@ -33,16 +41,7 @@ const ClientAPIs = ({ $, Popper }) => {
     showModal: false,
   });
 
-  const [isShown, setIsShown] = useState(true);
-
-  const [idsStr, setIdsStr] = useState("");
-  const [apiIds, setAPIIds] = useState([]);
-  const [toggleContainers, setToggleContainers] = useState({});
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [mappingsPayload, setMappingsPayload] = useState(
-    new ClientAPI(defaultPayload)
-  );
-
+  // Handlers
   const fetchClientAPI = async (idsStrLocal) => {
     const arr = idsStrLocal.split(",");
     let data = [];
@@ -136,8 +135,6 @@ const ClientAPIs = ({ $, Popper }) => {
       showModal: false,
     });
   };
-
-  console.log("Client API Main");
 
   return (
     <div className="container-fluid">

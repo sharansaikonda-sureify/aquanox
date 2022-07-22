@@ -126,7 +126,6 @@ const SureifyObjectMappingsNavBar = React.memo(
       });
     };
 
-    console.count("SOM Navbar");
 
     return (
       <>

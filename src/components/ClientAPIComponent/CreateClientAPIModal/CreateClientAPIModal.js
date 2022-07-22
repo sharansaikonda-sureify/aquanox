@@ -1,11 +1,17 @@
+// Packages
 import React, { useEffect, useState } from "react";
-
 import { Modal } from "react-bootstrap";
+
+// Custom Objects
 import { ClientAPI } from "../../../constants/clientapi";
-import constants from "../../../constants/constants";
-import { v4 as uuidv4 } from "uuid";
+
+// Custom Components
 import ClientAPIObjectMapping from "../ClientAPIObjectMapping/ClientAPIObjectMapping";
+
+// Material UI Components
 import { Stack, Button } from "@mui/material";
+
+// Material UI Icons
 import { Check, Close } from "@mui/icons-material";
 
 const CreateClientAPIModal = ({
@@ -73,6 +79,6 @@ const CreateClientAPIModal = ({
       </Modal.Footer>
     </Modal>
   );
-};;;
+};
 
 export default CreateClientAPIModal;

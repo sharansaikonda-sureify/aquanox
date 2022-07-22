@@ -1,8 +1,14 @@
+// Packages
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+
+// Objects
 import constants from "../../../constants/constants";
-import { ClientAPI } from "../../../constants/clientapi";
 import { GetTokensData } from "../../../constants/utils";
+import { ClientAPI } from "../../../constants/clientapi";
+
+// Material UI Components
+import { Grid } from "@mui/material";
 
 // Custom Components
 import CustomTextFieldNumber from "../../../ui-elements/CustomTextFieldNumber/CustomTextFieldNumber";
@@ -10,7 +16,6 @@ import CustomTextField from "../../../ui-elements/CustomTextField/CustomTextFiel
 import CustomTextArea from "../../../ui-elements/CustomTextArea/CustomTextArea";
 import CustomSelect from "../../../ui-elements/CustomSelect/CustomSelect";
 import Ctabar from "../../../ui-elements/Ctabar/Ctabar";
-import { Grid, Stack } from "@mui/material";
 
 const ClientAPIObjectMapping = ({
   mapping,
@@ -115,8 +120,6 @@ const ClientAPIObjectMapping = ({
       });
     }
   };
-
-  console.log("Object Mapping");
 
   return (
     <div className="container">

@@ -1,8 +1,12 @@
+// Packages
 import React, { useEffect, useState } from "react";
-
 import { Button, Modal } from "react-bootstrap";
 import { v4 as uuidv4 } from "uuid";
+
+// Custom Objects
 import { SureifyObjectMapping } from "../../../constants/som";
+
+// Custom Compoennts
 import CustomTextField from "../../../ui-elements/CustomTextField/CustomTextField";
 import CustomTextFieldNumber from "../../../ui-elements/CustomTextFieldNumber/CustomTextFieldNumber";
 
@@ -137,8 +141,6 @@ const CreateMappingModal = React.memo(
 
       document.body.removeChild(element);
     };
-
-    console.count("Generate Mappings Modal");
 
     return (
       <Modal show={generateMappingsState.showModal} onHide={handleClose}>

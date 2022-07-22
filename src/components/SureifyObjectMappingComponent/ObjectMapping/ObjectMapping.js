@@ -34,7 +34,6 @@ const ObjectMapping = React.memo(
 
     // Functions
     const changeHandler = (e) => {
-      console.log(isShowCtaBar);
       let newkey = e.target.name;
       let newvalue = e.target.value;
       let newData = new SureifyObjectMapping({ ...data, [newkey]: newvalue });
@@ -53,7 +52,6 @@ const ObjectMapping = React.memo(
       try {
         const tokens = GetTokensData();
         const jsonData = data.getPatchMappings(cdsId);
-        console.log(jsonData);
         await axios.patch(constants.SOM_URL(), jsonData, {
           headers: tokens,
         });
@@ -75,7 +73,6 @@ const ObjectMapping = React.memo(
       }
     };
 
-    console.count("Object Mappings");
     return (
       <div className="container">
         <CustomSelect

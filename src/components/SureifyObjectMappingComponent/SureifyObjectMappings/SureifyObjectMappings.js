@@ -75,7 +75,6 @@ const SureifyObjectMappings = ({ $, Popper }) => {
   };
 
   const filterMappingsByGroup = (mapping_id, parent_idx) => {
-    console.log("entered filter mappings by group");
     const data = mappingsState.mappings.filter(
       (row) => row.mapping_id !== mapping_id
     );
@@ -161,7 +160,6 @@ const SureifyObjectMappings = ({ $, Popper }) => {
     }
   };
 
-  console.count("Sureify Object Mappings");
   return (
     <div className="container-fluid">
       <ErrorHandlerModal

@@ -1,7 +1,6 @@
 // Packages
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 // Material UI Compionents
 import {
@@ -20,9 +19,6 @@ import {
   Home,
   Search,
 } from "@mui/icons-material";
-
-// Material UI Colors
-import { yellow } from "@mui/material/colors";
 
 // Custom Objects
 import { ClientAPI, defaultPayload } from "../../../constants/clientapi";
@@ -80,8 +76,6 @@ const ClientAPIsNavBar = React.memo(
         showModal: false,
       });
     }, []);
-
-    console.count("Client API Navbar");
 
     return (
       <>
