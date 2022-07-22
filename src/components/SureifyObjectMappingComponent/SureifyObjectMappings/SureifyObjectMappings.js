@@ -132,7 +132,7 @@ const SureifyObjectMappings = ({ $, Popper }) => {
       await axios.patch(constants.SOM_URL(), jsonData, {
         headers: tokens,
       });
-      fetchMappings(jsonData.client_data_source_id);
+      await fetchMappings(jsonData.client_data_source_id);
       handleClose();
     } catch (e) {
       setErrorState({ error: e, showModal: true });

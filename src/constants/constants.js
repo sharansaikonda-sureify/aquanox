@@ -56,6 +56,7 @@ const constants = {
     "email_attachment_content",
   ],
   MAPPINGS_SESSION_LESS: ["true", "false"],
+  MAPPINGS_HTTP_VERBS: ["GET", "POST", "PUT", "DELETE"],
 };
 
 export default constants;

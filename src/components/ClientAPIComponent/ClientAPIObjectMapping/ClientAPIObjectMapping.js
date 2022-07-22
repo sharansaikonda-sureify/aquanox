@@ -1,18 +1,80 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import constants from "../../../constants/constants";
 import { ClientAPI } from "../../../constants/clientapi";
 import { GetTokensData } from "../../../constants/utils";
 
-const ClientAPIObjectMapping = ({ mapping, cloneMappings, clientAPIId }) => {
+// Custom Components
+import CustomTextFieldNumber from "../../../ui-elements/CustomTextFieldNumber/CustomTextFieldNumber";
+import CustomTextField from "../../../ui-elements/CustomTextField/CustomTextField";
+import CustomTextArea from "../../../ui-elements/CustomTextArea/CustomTextArea";
+import CustomSelect from "../../../ui-elements/CustomSelect/CustomSelect";
+import Ctabar from "../../../ui-elements/Ctabar/Ctabar";
+import { Grid, Stack } from "@mui/material";
+
+const ClientAPIObjectMapping = ({
+  mapping,
+  setMapping,
+  cloneMappings,
+  clientAPIId,
+  objectKey,
+  isShowCtaBar = false,
+  shouldLockFields = true,
+  setErrorState,
+  fetchAllClientAPIs,
+}) => {
+  // UseState
   const [data, setData] = useState(new ClientAPI(mapping));
-  const [isLocked, setIsLocked] = useState(true);
+  const [isLocked, setIsLocked] = useState(shouldLockFields);
 
   const changeHandler = (e) => {
     let newkey = e.target.name;
     let newvalue = e.target.value;
     let newData = new ClientAPI({ ...data, [newkey]: newvalue });
+    if (!isShowCtaBar) {
+      setMapping(newData);
+    }
     setData(newData);
+  };
+
+  const fetchCompleteData = async () => {
+    if (isLocked) {
+      try {
+        const tokens = GetTokensData();
+        const fetch_url = constants.CLIENT_APIS_URL() + "/" + data.id;
+        const resp = await axios.get(fetch_url, {
+          headers: tokens,
+        });
+        setData(new ClientAPI(resp.data.data));
+      } catch (e) {
+        setErrorState({ error: e, showModal: true });
+      }
+    }
+  };
+
+  const copyClientAPI = (data) => {
+    const newData = data.getPutMappings();
+    navigator.clipboard.writeText(JSON.stringify(newData));
+  };
+
+  const downloadClientAPI = () => {
+    downloadFile(data.name + ".json", JSON.stringify(data.getPostMappings()));
+  };
+
+  const downloadFile = (filename, text) => {
+    var element = document.createElement("a");
+    element.setAttribute(
+      "href",
+      "data:text/json;charset=utf-8," + encodeURIComponent(text)
+    );
+    element.setAttribute("download", filename);
+
+    element.style.display = "none";
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
   };
 
   const updateClientAPI = async () => {
@@ -27,11 +89,7 @@ const ClientAPIObjectMapping = ({ mapping, cloneMappings, clientAPIId }) => {
         }
       );
     } catch (e) {
-      alert(
-        e.message ||
-          e.response?.data?.errors ||
-          "Some error occured while updating..."
-      );
+      setErrorState({ error: e, showModal: true });
     }
   };
 
@@ -45,394 +103,261 @@ const ClientAPIObjectMapping = ({ mapping, cloneMappings, clientAPIId }) => {
         await axios.delete(constants.CLIENT_APIS_URL() + "/" + clientAPIId, {
           headers: tokens,
         });
+
+        await fetchAllClientAPIs();
       } catch (e) {
-        alert(
-          e.message ||
-            e.response?.data?.errors ||
-            "Some error occured while updating..."
-        );
+        setErrorState({ error: e, showModal: true });
       }
     } else {
-      alert("Invalid API ID Entered!!!");
+      setErrorState({
+        error: new Error("Invalid API ID Entered"),
+        showModal: true,
+      });
     }
   };
 
+  console.log("Object Mapping");
+
   return (
     <div className="container">
-      <div className="row mt-2">
-        <div className="col">
-          <input
-            type="button"
-            className="form-control btn-danger"
-            value={isLocked ? "Unlock" : "Lock"}
-            onClick={async () => {
-              setIsLocked(!isLocked);
-              if (isLocked) {
-                try {
-                  const tokens = GetTokensData();
-                  const fetch_url = constants.CLIENT_APIS_URL() + "/" + data.id;
-                  const resp = await axios.get(fetch_url, {
-                    headers: tokens,
-                  });
-                  setData(new ClientAPI(resp.data.data));
-                } catch (e) {
-                  alert(
-                    e.message ||
-                      e.response?.data?.errors ||
-                      "Some error occured while updating..."
-                  );
-                }
-              }
-            }}
-          />
-        </div>
-      </div>
-
-      {data.client_data_source_id && data.client_data_source_id > 0 && (
-        <div className="row mt-2">
-          <div className="col">
-            <label className="form-label" htmlFor="client_data_source_id">
-              Client Data Source ID
-            </label>
-          </div>
-          <div className="col">
-            <input
-              className=" form-control"
-              disabled
-              onChange={(e) => {
-                changeHandler(e);
-              }}
-              type="number"
-              name="client_data_source_id"
-              value={data.client_data_source_id}
+      <Grid
+        container
+        spacing={2}
+        marginTop="15px"
+        paddingRight={2}
+        justify="space-between"
+        alignItems="stretch"
+      >
+        <Grid item xs={`${isShowCtaBar === false ? "12" : "6"}`}>
+          {data.client_data_source_id && data.client_data_source_id > 0 && (
+            <CustomTextFieldNumber
+              key={"client_data_source_id" + objectKey}
+              data={{ client_data_source_id: data.client_data_source_id }}
+              labelName="Client Data Source ID"
+              textFieldId="client_data_source_id"
+              helperText="Client Data Source ID for Sureify Object Mappings"
+              isLocked={true}
+              changeHandler={changeHandler}
             />
-          </div>
-        </div>
+          )}
+        </Grid>
+        <Grid item xs={`${isShowCtaBar === false ? "12" : "6"}`}>
+          <CustomTextField
+            key={"client_data_source_uuid" + objectKey}
+            data={{ client_data_source_uuid: data.client_data_source_uuid }}
+            labelName="Client Data Sourc UUID"
+            textFieldId="client_data_source_uuid"
+            helperText="Alternative id for client data source"
+            isLocked={true}
+            changeHandler={changeHandler}
+          />
+        </Grid>
+      </Grid>
+      <CustomTextArea
+        key={"headers" + objectKey}
+        data={{ headers: data.headers }}
+        labelName="Headers"
+        textAreaId="headers"
+        helperText="Headers for given API"
+        isLocked={isLocked}
+        changeHandler={changeHandler}
+      />
+
+      <Grid
+        container
+        spacing={2}
+        paddingRight={2}
+        justify="space-between"
+        alignItems="stretch"
+      >
+        <Grid item xs={6}>
+          <CustomTextArea
+            key={"params" + objectKey}
+            data={{ params: data.params }}
+            labelName="Params"
+            textAreaId="params"
+            helperText="Query Params for given API"
+            isLocked={isLocked}
+            changeHandler={changeHandler}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <CustomTextArea
+            key={"body" + objectKey}
+            data={{ body: data.body }}
+            labelName="Body"
+            textAreaId="body"
+            helperText="JSON Object (Body) for given API"
+            isLocked={isLocked}
+            changeHandler={changeHandler}
+          />
+        </Grid>
+      </Grid>
+
+      <Grid
+        container
+        spacing={2}
+        paddingRight={2}
+        justify="space-between"
+        alignItems="stretch"
+      >
+        <Grid item xs={6}>
+          <CustomTextField
+            key={"ca_cert" + objectKey}
+            data={{ ca_cert: data.ca_cert }}
+            labelName="CA Cert"
+            textFieldId="ca_cert"
+            helperText="CA Cert for given API"
+            isLocked={isLocked}
+            changeHandler={changeHandler}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <CustomTextArea
+            key={"ssl_cert" + objectKey}
+            data={{ ssl_cert: data.ssl_cert }}
+            labelName="SSL Cert"
+            textAreaId="ssl_cert"
+            helperText="SSL certs of JSON array for given API"
+            isLocked={isLocked}
+            changeHandler={changeHandler}
+          />
+        </Grid>
+      </Grid>
+
+      <Grid
+        container
+        spacing={2}
+        paddingRight={2}
+        justify="space-between"
+        alignItems="stretch"
+      >
+        <Grid item xs={2}>
+          <CustomSelect
+            key={"session_less" + objectKey}
+            data={{ session_less: data.session_less }}
+            labelName="Session Less"
+            selectId="session_less"
+            helperText="Boolean variable indicating the need of access_token"
+            isLocked={isLocked}
+            changeHandler={changeHandler}
+            dropDownMap={constants.MAPPINGS_SESSION_LESS}
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <CustomTextArea
+            key={"clear_api_caches" + objectKey}
+            data={{ clear_api_caches: data.clear_api_caches }}
+            labelName="Clear API Caches"
+            textAreaId="clear_api_caches"
+            helperText="JSON array specifying the cached responses to be cleared"
+            isLocked={isLocked}
+            changeHandler={changeHandler}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <CustomTextArea
+            key={"no_cache_keys" + objectKey}
+            data={{ no_cache_keys: data.no_cache_keys }}
+            labelName="No Cache Keys"
+            textAreaId="no_cache_keys"
+            helperText="JSON array specifying the keys to be removed from redis key"
+            isLocked={isLocked}
+            changeHandler={changeHandler}
+          />
+        </Grid>
+      </Grid>
+
+      <CustomTextArea
+        key={"custom_error_codes" + objectKey}
+        data={{ custom_error_codes: data.custom_error_codes }}
+        labelName="Custom Error Codes"
+        textAreaId="custom_error_codes"
+        helperText="Custom Error codes to be sent based on conditions"
+        isLocked={isLocked}
+        changeHandler={changeHandler}
+      />
+
+      <Grid
+        container
+        spacing={2}
+        paddingRight={2}
+        justify="space-between"
+        alignItems="stretch"
+      >
+        <Grid item xs={9}>
+          <CustomTextField
+            key={"name" + objectKey}
+            data={{ name: data.name }}
+            labelName="API Name"
+            textFieldId="name"
+            helperText="Unique name for a given API"
+            isLocked={isLocked}
+            changeHandler={changeHandler}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <CustomTextFieldNumber
+            key={"cache_time" + objectKey}
+            data={{ cache_time: data.cache_time }}
+            labelName="Cache Time"
+            textFieldId="cache_time"
+            helperText="Cache time for success API response"
+            isLocked={isLocked}
+            changeHandler={changeHandler}
+          />
+        </Grid>
+      </Grid>
+
+      <Grid
+        container
+        spacing={2}
+        paddingRight={2}
+        justify="space-between"
+        alignItems="stretch"
+      >
+        <Grid item xs={3}>
+          <CustomSelect
+            key={"type" + objectKey}
+            data={{ type: data.type }}
+            labelName="HTTP Verb"
+            selectId="type"
+            helperText="HTTP Verb for given API"
+            isLocked={isLocked}
+            changeHandler={changeHandler}
+            dropDownMap={constants.MAPPINGS_HTTP_VERBS}
+          />
+        </Grid>
+        <Grid item xs={9}>
+          <CustomTextField
+            key={"url" + objectKey}
+            data={{ url: data.url }}
+            labelName="API Url"
+            textFieldId="url"
+            helperText="URL for a given API"
+            isLocked={isLocked}
+            changeHandler={changeHandler}
+          />
+        </Grid>
+      </Grid>
+      {isShowCtaBar ? (
+        <Ctabar
+          key={"cta_bar" + objectKey}
+          isLocked={isLocked}
+          setIsLocked={setIsLocked}
+          data={data}
+          deleteData={deleteClientAPI}
+          updateData={updateClientAPI}
+          copyData={copyClientAPI}
+          downloadData={downloadClientAPI}
+          callCustomFunc={fetchCompleteData}
+          cloneData={cloneMappings}
+          isDownload={true}
+          isCustomFunc={true}
+        />
+      ) : (
+        <></>
       )}
-
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="client_data_source_uuid">
-            Client Data Source UUID
-          </label>
-        </div>
-        <div className="col">
-          <input
-            className=" form-control"
-            disabled
-            onChange={(e) => {
-              changeHandler(e);
-            }}
-            type="text"
-            name="client_data_source_uuid"
-            value={data.client_data_source_uuid}
-          />
-        </div>
-      </div>
-
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="headers">
-            Headers
-          </label>
-        </div>
-        <div className="col">
-          <textarea
-            className=" form-control"
-            disabled={isLocked}
-            onChange={(e) => {
-              changeHandler(e);
-            }}
-            rows="2"
-            cols="2"
-            name="headers"
-            value={data.headers}
-          />
-        </div>
-      </div>
-
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="params">
-            Params
-          </label>
-        </div>
-        <div className="col">
-          <textarea
-            className=" form-control"
-            disabled={isLocked}
-            onChange={(e) => {
-              changeHandler(e);
-            }}
-            rows="2"
-            cols="2"
-            name="params"
-            value={data.params}
-          />
-        </div>
-      </div>
-
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="body">
-            Body
-          </label>
-        </div>
-        <div className="col">
-          <textarea
-            className=" form-control"
-            disabled={isLocked}
-            onChange={(e) => {
-              changeHandler(e);
-            }}
-            rows="2"
-            cols="2"
-            name="body"
-            value={data.body}
-          />
-        </div>
-      </div>
-
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="ca_cert">
-            CA Cert
-          </label>
-        </div>
-        <div className="col">
-          <textarea
-            className=" form-control"
-            disabled={isLocked}
-            onChange={(e) => {
-              changeHandler(e);
-            }}
-            rows="2"
-            cols="2"
-            name="ca_cert"
-            value={data.ca_cert}
-          />
-        </div>
-      </div>
-
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="ssl_cert">
-            SSL Cert
-          </label>
-        </div>
-        <div className="col">
-          <textarea
-            className=" form-control"
-            disabled={isLocked}
-            onChange={(e) => {
-              changeHandler(e);
-            }}
-            rows="2"
-            cols="2"
-            name="ssl_cert"
-            value={data.ssl_cert}
-          />
-        </div>
-      </div>
-
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="session_less">
-            Session Less
-          </label>
-        </div>
-        <div className="col">
-          <select
-            defaultValue={data.session_less}
-            disabled={isLocked}
-            onChange={(e) => {
-              changeHandler(e);
-            }}
-            className=" form-select"
-            name="session_less"
-            id="session_less"
-          >
-            {constants.MAPPINGS_SESSION_LESS.map((session_less) => {
-              return <option value={session_less}>{session_less}</option>;
-            })}
-          </select>
-        </div>
-      </div>
-
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="cache_time">
-            Cache Time
-          </label>
-        </div>
-        <div className="col">
-          <input
-            className=" form-control"
-            disabled={isLocked}
-            onChange={(e) => {
-              changeHandler(e);
-            }}
-            type="number"
-            name="cache_time"
-            value={data.cache_time}
-          />
-        </div>
-      </div>
-
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="clear_api_caches">
-            Clear API Caches
-          </label>
-        </div>
-        <div className="col">
-          <textarea
-            className=" form-control"
-            disabled={isLocked}
-            onChange={(e) => {
-              changeHandler(e);
-            }}
-            rows="2"
-            cols="2"
-            name="clear_api_caches"
-            value={data.clear_api_caches}
-          />
-        </div>
-      </div>
-
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="no_cache_keys">
-            No Cache Keys
-          </label>
-        </div>
-        <div className="col">
-          <textarea
-            className=" form-control"
-            disabled={isLocked}
-            onChange={(e) => {
-              changeHandler(e);
-            }}
-            rows="2"
-            cols="2"
-            name="no_cache_keys"
-            value={data.no_cache_keys}
-          />
-        </div>
-      </div>
-
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="custom_error_codes">
-            Custom Error Codes
-          </label>
-        </div>
-        <div className="col">
-          <textarea
-            className=" form-control"
-            disabled={isLocked}
-            onChange={(e) => {
-              changeHandler(e);
-            }}
-            rows="2"
-            cols="2"
-            name="custom_error_codes"
-            value={data.custom_error_codes}
-          />
-        </div>
-      </div>
-
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="name">
-            API Name
-          </label>
-        </div>
-        <div className="col">
-          <input
-            className=" form-control"
-            disabled={isLocked}
-            onChange={(e) => {
-              changeHandler(e);
-            }}
-            type="text"
-            name="name"
-            value={data.name}
-          />
-        </div>
-      </div>
-
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="type">
-            Http Verb
-          </label>
-        </div>
-        <div className="col">
-          <input
-            className=" form-control"
-            disabled={isLocked}
-            onChange={(e) => {
-              changeHandler(e);
-            }}
-            type="text"
-            name="type"
-            value={data.type}
-          />
-        </div>
-      </div>
-
-      <div className="row mt-2">
-        <div className="col">
-          <label className="form-label" htmlFor="url">
-            API Url
-          </label>
-        </div>
-        <div className="col">
-          <input
-            className=" form-control"
-            disabled={isLocked}
-            onChange={(e) => {
-              changeHandler(e);
-            }}
-            type="text"
-            name="url"
-            value={data.url}
-          />
-        </div>
-      </div>
-
-      <div className="row mt-2">
-        <div className="col">
-          <input
-            disabled={isLocked}
-            type="button"
-            className="form-control btn-danger"
-            value="Update"
-            onClick={updateClientAPI}
-          />
-        </div>
-        <div className="col">
-          <input
-            disabled={isLocked}
-            type="button"
-            className="form-control btn-danger"
-            value="Delete"
-            onClick={deleteClientAPI}
-          />
-        </div>
-        <div className="col">
-          <input
-            disabled={isLocked}
-            type="button"
-            className="form-control btn-danger"
-            value="Clone"
-            onClick={() => {
-              cloneMappings(data);
-            }}
-          />
-        </div>
-      </div>
     </div>
   );
 };

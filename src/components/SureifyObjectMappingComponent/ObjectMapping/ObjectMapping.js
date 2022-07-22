@@ -44,6 +44,11 @@ const ObjectMapping = React.memo(
       setData(newData);
     };
 
+    const copyMapping = (data) => {
+      const newData = data.getPatchMappings(cdsId);
+      navigator.clipboard.writeText(JSON.stringify(newData));
+    };
+
     const updateMapping = async () => {
       try {
         const tokens = GetTokensData();
@@ -196,6 +201,7 @@ const ObjectMapping = React.memo(
             deleteData={deleteMapping}
             updateData={updateMapping}
             cloneData={cloneMappings}
+            copyData={copyMapping}
           />
         ) : (
           <></>

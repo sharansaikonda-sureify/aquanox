@@ -6,7 +6,9 @@ import { Button, Stack } from "@mui/material";
 
 // Material UI Icons
 import {
+  CloudDownloadOutlined,
   ContentCopyOutlined,
+  ContentCutOutlined,
   CreateOutlined,
   DeleteOutlined,
   LockOpenOutlined,
@@ -23,6 +25,11 @@ const Ctabar = ({
   cloneData,
   deleteData,
   updateData,
+  copyData = () => {},
+  downloadData = () => {},
+  isDownload = false,
+  isCustomFunc = false,
+  callCustomFunc = () => {},
 }) => {
   return (
     <Stack
@@ -44,7 +51,9 @@ const Ctabar = ({
           variant="contained"
           color="primary"
           disabled={isLocked}
-          onClick={updateData}
+          onClick={async () => {
+            await updateData();
+          }}
           sx={{
             backgroundColor: deepPurple[900],
             "&:hover": {
@@ -59,7 +68,9 @@ const Ctabar = ({
           variant="contained"
           color="success"
           disabled={isLocked}
-          onClick={deleteData}
+          onClick={async () => {
+            await deleteData();
+          }}
           sx={{
             backgroundColor: deepPurple[900],
             "&:hover": {
@@ -87,12 +98,53 @@ const Ctabar = ({
         >
           Clone
         </Button>
+        <Button
+          variant="contained"
+          color="success"
+          disabled={isLocked}
+          onClick={() => {
+            copyData(data);
+          }}
+          sx={{
+            backgroundColor: deepPurple[900],
+            "&:hover": {
+              backgroundColor: deepPurple[800],
+            },
+          }}
+          endIcon={<ContentCutOutlined />}
+        >
+          Copy
+        </Button>
+        {isDownload ? (
+          <Button
+            variant="contained"
+            color="success"
+            disabled={isLocked}
+            onClick={() => {
+              downloadData(data);
+            }}
+            sx={{
+              backgroundColor: deepPurple[900],
+              "&:hover": {
+                backgroundColor: deepPurple[800],
+              },
+            }}
+            endIcon={<CloudDownloadOutlined />}
+          >
+            Download
+          </Button>
+        ) : (
+          <></>
+        )}
       </Stack>
 
       <Button
         variant="contained"
         color="success"
-        onClick={() => {
+        onClick={async () => {
+          if (isCustomFunc) {
+            await callCustomFunc();
+          }
           setIsLocked(!isLocked);
         }}
         sx={{

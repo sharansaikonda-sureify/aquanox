@@ -1,5 +1,32 @@
 import { v4 as uuidv4 } from "uuid";
 
+const customErrorCodesDefaultSchema = {
+  condition: {
+    response: {},
+    status_codes: ["xxx"],
+  },
+  is_success: false,
+  message: "",
+  outgoing_status_code: 0,
+};
+
+export const defaultPayload = {
+  body: {},
+  ca_cert: "",
+  cache_time: -1,
+  clear_api_caches: [],
+  client_data_source_uuid: uuidv4(),
+  custom_error_codes: [customErrorCodesDefaultSchema],
+  headers: [{ key: "Content-Type", value: "application/json" }],
+  name: "",
+  no_cache_keys: [],
+  params: [],
+  session_less: false,
+  ssl_cert: ["", ""],
+  type: "GET",
+  url: "https://example.com",
+};
+
 export function ClientAPI({
   id,
   body = {},

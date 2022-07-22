@@ -68,8 +68,8 @@ const CreateMappingModal = React.memo(
             <Button
               variant="contained"
               color="success"
-              onClick={() => {
-                createNewMappings(
+              onClick={async () => {
+                await createNewMappings(
                   data.getPostMappings(createMappingState.cdsId),
                   closeModal
                 );

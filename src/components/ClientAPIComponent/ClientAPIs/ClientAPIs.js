@@ -3,40 +3,36 @@ import axios from "axios";
 import constants from "../../../constants/constants";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import { ClientAPI } from "../../../constants/clientapi";
 import ClientAPIObjectMapping from "../ClientAPIObjectMapping/ClientAPIObjectMapping";
 import CreateClientAPIModal from "../CreateClientAPIModal/CreateClientAPIModal";
 import { GetTokensData } from "../../../constants/utils";
+import ClientAPIsNavBar from "./ClientAPIsNavBar";
+import ErrorHandlerModal from "../../ErrorHandlerModal/ErrorHandlerModal";
+
+import { ClientAPI, defaultPayload } from "../../../constants/clientapi";
+import { ExpandLess, ExpandMore, InfoOutlined } from "@mui/icons-material";
+import { deepPurple, grey } from "@mui/material/colors";
+import { Box, Button, Stack, Typography } from "@mui/material";
+import { Badge } from "react-bootstrap";
 
 const ClientAPIs = ({ $, Popper }) => {
-  const customErrorCodesDefaultSchema = {
-    condition: {
-      response: {},
-      status_codes: ["xxx"],
-    },
-    is_success: false,
-    message: "",
-    outgoing_status_code: 0,
-  };
+  // useState
+  const [mappingsState, setMappingsState] = useState({
+    mappings: [],
+    toggleContainers: {},
+    isCollapseAll: true,
+  });
 
-  const newAPIDefaultPayload = {
-    body: {},
-    ca_cert: "",
-    cache_time: -1,
-    clear_api_caches: [],
-    client_data_source_uuid: uuidv4(),
-    custom_error_codes: [customErrorCodesDefaultSchema],
-    headers: [{ key: "Content-Type", value: "application/json" }],
-    name: "",
-    no_cache_keys: [],
-    params: [],
-    session_less: false,
-    ssl_cert: ["", ""],
-    type: "GET",
-    url: "https://example.com",
-  };
+  const [errorState, setErrorState] = useState({
+    error: new Error(),
+    showModal: false,
+  });
 
-  const [mappings, setMappings] = useState([]);
+  const [createMappingMainState, setCreateMappingMainState] = useState({
+    mapping: new ClientAPI(defaultPayload),
+    showModal: false,
+  });
+
   const [isShown, setIsShown] = useState(true);
 
   const [idsStr, setIdsStr] = useState("");
@@ -44,14 +40,13 @@ const ClientAPIs = ({ $, Popper }) => {
   const [toggleContainers, setToggleContainers] = useState({});
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [mappingsPayload, setMappingsPayload] = useState(
-    new ClientAPI(newAPIDefaultPayload)
+    new ClientAPI(defaultPayload)
   );
-  const navigate = useNavigate();
 
   const fetchClientAPI = async (idsStrLocal) => {
     const arr = idsStrLocal.split(",");
     let data = [];
-    let idsList = [];
+    let togCont = {};
     const tokens = GetTokensData();
     try {
       for (let i = 0; i < arr.length; i++) {
@@ -59,58 +54,59 @@ const ClientAPIs = ({ $, Popper }) => {
         const resp = await axios.get(fetch_url, {
           headers: tokens,
         });
-
         data.push(new ClientAPI(resp.data.data));
-        idsList.push(resp.data.data["id"]);
+        togCont[+resp.data.data["id"]] = false;
       }
 
-      setAPIIds(idsList);
-
-      let togCont = { ...toggleContainers };
-      for (let i = 0; i < arr.length; i++) {
-        togCont[parseInt(arr[i])] = false;
-      }
-
-      setToggleContainers(togCont);
-      setMappings(data);
+      setMappingsState({
+        mappings: data,
+        toggleContainers: togCont,
+        isCollapseAll: false,
+      });
     } catch (e) {
-      alert("Cannot fetch client APIs -- " + idsStrLocal + " : " + e.message);
+      setErrorState({ error: e, showModal: true });
     }
   };
 
   const fetchAllClientAPIs = async () => {
-    const fetch_url = constants.CLIENT_APIS_URL() + "?page_num=1&page_limit=0";
+    const fetch_url1 = constants.CLIENT_APIS_URL() + "?page_num=1&page_limit=0";
+    const fetch_url2 =
+      constants.CLIENT_APIS_URL() +
+      "?page_num=1&page_limit=0&session_less=true";
     const tokens = GetTokensData();
+
     try {
-      const resp = await axios.get(fetch_url, {
+      const resp1 = await axios.get(fetch_url1, {
         headers: tokens,
       });
+
+      const resp2 = await axios.get(fetch_url2, {
+        headers: tokens,
+      });
+
+      let response = [...resp1.data.data];
+      response.push(...resp2.data.data);
+
       let data = [];
-      for (let i = 0; i < resp.data.data.length; i++) {
-        data.push(new ClientAPI(resp.data.data[i]));
+
+      for (let i = 0; i < response.length; i++) {
+        data.push(new ClientAPI(response[i]));
       }
 
       const apiIdsList = data.map((row) => row.id);
-      setAPIIds(apiIdsList);
-
       let togCont = {};
       for (let i = 0; i < apiIdsList.length; i++) {
-        togCont[apiIdsList[i]] = false;
+        togCont[apiIdsList[i]] = true;
       }
-      setToggleContainers(togCont);
-      setMappings(data);
+
+      setMappingsState({
+        toggleContainers: togCont,
+        mappings: data,
+        isCollapseAll: true,
+      });
     } catch (e) {
-      alert("Cannot fetch client APIs: " + e.message);
+      setErrorState({ error: e, showModal: true });
     }
-  };
-
-  const toggleAllCards = (flag) => {
-    let togCont = { ...toggleContainers };
-    for (const key in togCont) {
-      togCont[key] = flag;
-    }
-
-    setToggleContainers(togCont);
   };
 
   const createNewClientAPI = async (jsonData, handleClose) => {
@@ -119,166 +115,164 @@ const ClientAPIs = ({ $, Popper }) => {
       const resp = await axios.post(constants.CLIENT_APIS_URL(), jsonData, {
         headers: tokens,
       });
-      fetchClientAPI("" + resp.data.data.id);
+      await fetchClientAPI("" + resp.data.data.id);
       handleClose(true);
     } catch (e) {
-      alert(
-        e.message ||
-          e.response?.data?.errors ||
-          "Some error occured while updating..."
-      );
+      setErrorState({ error: e, showModal: true });
     }
   };
 
   const cloneMappings = (data) => {
-    openCreateModal({ ...data, client_data_source_uuid: uuidv4() });
+    setCreateMappingMainState({
+      mapping: new ClientAPI({ ...data, client_data_source_uuid: uuidv4() }),
+      showModal: true,
+    });
   };
 
-  const closeCreateModal = () => {
-    setShowCreateModal(false);
+  const closeCreateMappingMainModal = () => {
+    setCreateMappingMainState({
+      ...createMappingMainState,
+      mapping: new ClientAPI(defaultPayload),
+      showModal: false,
+    });
   };
 
-  const openCreateModal = (data) => {
-    setMappingsPayload(new ClientAPI(data));
-    setShowCreateModal(true);
-  };
+  console.log("Client API Main");
 
   return (
     <div className="container-fluid">
+      <ErrorHandlerModal
+        key="client_apis_error_modal"
+        errorState={errorState}
+        setErrorState={setErrorState}
+      />
+
+      <CreateClientAPIModal
+        key={"client_api_create_clientapi_modal"}
+        createNewClientAPI={createNewClientAPI}
+        createMappingState={createMappingMainState}
+        fetchAllClientAPIs={fetchAllClientAPIs}
+        cloneMappings={cloneMappings}
+        closeModal={closeCreateMappingMainModal}
+        setErrorState={setErrorState}
+      />
       <div className="row fixed-top p-2 customnavbar">
-        <div className="col">
-          <input
-            className="form-control btn-light"
-            onClick={() => {
-              navigate("/");
-            }}
-            type="button"
-            value="Home"
-          />
-        </div>
-        <div className="col">
-          <input
-            className="form-control"
-            id="api_id"
-            name="api_id"
-            type="text"
-            placeholder="Enter API Ids separated by comma"
-            onChange={(e) => {
-              setIdsStr(e.target.value);
-            }}
-            value={idsStr}
-          />
-        </div>
-        <div className="col">
-          <input
-            className="form-control btn-success"
-            id="create_clientapi_button"
-            name="create_clientapi_button"
-            type="button"
-            onClick={() => {
-              openCreateModal({
-                ...newAPIDefaultPayload,
-                client_data_source_id: uuidv4(),
-              });
-            }}
-            value="Create"
-          />
-        </div>
-        <div className="col">
-          <input
-            className="form-control btn-success"
-            id="get_mappings_button"
-            name="get_mappings_button"
-            type="button"
-            onClick={() => {
-              toggleAllCards(isShown);
-              setIsShown(!isShown);
-            }}
-            value={isShown ? "Collapse All" : "Expand All"}
-          />
-        </div>
-        <div className="col">
-          <input
-            className="form-control btn-success"
-            id="get_mappings_button"
-            name="get_mappings_button"
-            type="button"
-            onClick={() => {
-              fetchClientAPI(idsStr);
-            }}
-            value="Fetch Specified APIs"
-          />
-        </div>
-        <div className="col">
-          <input
-            className="form-control btn-success"
-            id="get_response_button"
-            name="get_response_button"
-            type="button"
-            onClick={fetchAllClientAPIs}
-            value="Fetch All"
-          />
-        </div>
+        <ClientAPIsNavBar
+          openModal={() => {
+            setCreateMappingMainState({
+              mapping: new ClientAPI(defaultPayload),
+              showModal: true,
+            });
+          }}
+          key={"sureify_object_mappings_navbar"}
+          createNewClientAPI={createNewClientAPI}
+          fetchAllClientAPIs={fetchAllClientAPIs}
+          fetchClientAPI={fetchClientAPI}
+          cloneMappings={cloneMappings}
+          mappingsState={mappingsState}
+          setMappingsState={setMappingsState}
+          setErrorState={setErrorState}
+        />
       </div>
       <div className="row mt-5 p-2">
         <div className="col customscrollbar mappingscontainer">
-          <CreateClientAPIModal
-            defaultPayload={mappingsPayload}
-            createNewClientAPI={createNewClientAPI}
-            closeModal={closeCreateModal}
-            show={showCreateModal}
-          />
-          {apiIds.map((id) => {
+          {Object.entries(mappingsState.toggleContainers).map((row) => {
             return (
               <div className="parentcontainer">
-                <div className="row mt-2">
-                  <div className="col-2"></div>
-                  <div className="col-4">
-                    <h3>API ID: {id}</h3>
-                  </div>
-                  <div className="col-2">
-                    <input
-                      type="button"
-                      className="form-control btn-danger"
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  spacing={2}
+                  sx={{
+                    marginTop: "5px",
+                    backgroundColor: "black",
+                    borderRadius: "5px",
+                  }}
+                >
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="flex-start"
+                    spacing={2}
+                  >
+                    <Typography component="div">
+                      <Box
+                        sx={{
+                          color: grey[50],
+                          fontStyle: "normal",
+                          textAlign: "left",
+                          fontWeight: "bold",
+                          fontSize: "h5.fontSize",
+                          fontFamily: "Monospace",
+                          m: 1,
+                        }}
+                      >
+                        API ID: {row[0]}
+                      </Box>
+                    </Typography>
+                  </Stack>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="flex-end"
+                    spacing={2}
+                    paddingRight={2}
+                  >
+                    <Button
+                      variant="contained"
+                      color="primary"
                       onClick={() => {
-                        setToggleContainers({
-                          ...toggleContainers,
-                          [id]: !toggleContainers[id],
+                        setMappingsState({
+                          ...mappingsState,
+                          toggleContainers: {
+                            ...mappingsState.toggleContainers,
+                            [+row[0]]: !mappingsState.toggleContainers[+row[0]],
+                          },
                         });
                       }}
-                      value={toggleContainers[id] ? "Expand" : "Collapse"}
-                    />
-                  </div>
-                  <div className="col-2">
-                    <input
-                      onClick={() => {
-                        openCreateModal({
-                          ...newAPIDefaultPayload,
-                          client_data_source_id: uuidv4(),
-                        });
+                      sx={{
+                        backgroundColor: deepPurple[900],
+                        "&:hover": {
+                          backgroundColor: deepPurple[800],
+                        },
                       }}
-                      type="button"
-                      className="form-control btn-danger"
-                      value="Create"
-                    />
-                  </div>
-                  <div className="row">
-                    <div className="col">
-                      {toggleContainers[id]
-                        ? null
-                        : mappings
-                            .filter((mapping) => mapping.id === id)
-                            .map((mapping) => {
-                              return (
-                                <ClientAPIObjectMapping
-                                  cloneMappings={cloneMappings}
-                                  key={mapping.client_data_source_uuid}
-                                  clientAPIId={id}
-                                  mapping={mapping}
-                                />
-                              );
-                            })}
-                    </div>
+                      endIcon={
+                        mappingsState.toggleContainers[+row[0]] ? (
+                          <ExpandMore />
+                        ) : (
+                          <ExpandLess />
+                        )
+                      }
+                    >
+                      {mappingsState.toggleContainers[+row[0]]
+                        ? "Expand"
+                        : "Collapse"}
+                    </Button>
+                  </Stack>
+                </Stack>
+
+                <div className="row">
+                  <div className="col">
+                    {mappingsState.toggleContainers[+row[0]]
+                      ? null
+                      : mappingsState.mappings
+                          .filter((mapping) => mapping.id === +row[0])
+                          .map((mapping) => {
+                            return (
+                              <ClientAPIObjectMapping
+                                objectKey={"client_api_object_mapping" + row[0]}
+                                fetchAllClientAPIs={fetchAllClientAPIs}
+                                isShowCtaBar={true}
+                                cloneMappings={cloneMappings}
+                                key={uuidv4()}
+                                clientAPIId={+row[0]}
+                                mapping={mapping}
+                                shouldLockFields={true}
+                                setErrorState={setErrorState}
+                              />
+                            );
+                          })}
                   </div>
                 </div>
               </div>

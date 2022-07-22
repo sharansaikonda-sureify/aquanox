@@ -249,7 +249,7 @@ const SureifyObjectMappingsNavBar = React.memo(
               color="primary"
               id="get_mappings_button"
               name="get_mappings_button"
-              onClick={() => {
+              onClick={async () => {
                 setMappingsState((prevState) => {
                   let toggleContainers = { ...prevState.toggleContainers };
 
@@ -262,7 +262,8 @@ const SureifyObjectMappingsNavBar = React.memo(
                 setCreateMappingMainState((prevState) => {
                   return { ...prevState, cdsId: cdsId };
                 });
-                fetchMappings(cdsId, true);
+
+                await fetchMappings(cdsId, true);
               }}
               endIcon={<Search />}
             >
