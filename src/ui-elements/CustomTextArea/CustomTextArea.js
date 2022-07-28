@@ -22,6 +22,7 @@ const CustomTextArea = ({
         name={textAreaId}
         label={labelName}
         value={data[textAreaId]}
+        autoComplete="off"
         onChange={(e) => {
           changeHandler(e, extraParams);
         }}

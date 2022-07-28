@@ -33,6 +33,7 @@ const SelectTextFieldCombo = ({
           name={selectId}
           label={labelName}
           value={data[selectId]}
+          autoComplete="off"
           onChange={(e) => {
             changeHandler(e, extraParams);
           }}

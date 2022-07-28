@@ -21,6 +21,7 @@ const CustomTextFieldNumber = ({
         type="number"
         label={labelName}
         value={data[textFieldId]}
+        autoComplete="off"
         onChange={(e) => {
           changeHandler(e, extraParams);
         }}

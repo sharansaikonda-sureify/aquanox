@@ -1,5 +1,5 @@
 // Packages
-import axios from "axios";
+import { axiosInstance as axios } from "../config/axiosConfig";
 
 export const defaultPayload = {
   headers: "{}",

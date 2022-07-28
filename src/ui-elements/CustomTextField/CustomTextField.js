@@ -20,6 +20,7 @@ const CustomTextField = ({
         name={textFieldId}
         label={labelName}
         value={data[textFieldId]}
+        autoComplete="off"
         onChange={(e) => {
           changeHandler(e, extraParams);
         }}

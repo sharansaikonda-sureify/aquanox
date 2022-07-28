@@ -1,5 +1,5 @@
 // Packages
-import axios from "axios";
+import { axiosInstance as axios } from "../../../config/axiosConfig";
 import React, { useState } from "react";
 
 // Objects

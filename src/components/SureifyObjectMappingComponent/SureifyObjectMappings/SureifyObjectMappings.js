@@ -1,6 +1,6 @@
 // Packages
 import React, { useState } from "react";
-import axios from "axios";
+import { axiosInstance as axios } from "../../../config/axiosConfig";
 
 // Custom Components
 import ObjectMapping from "../ObjectMapping/ObjectMapping";

@@ -1,8 +1,8 @@
 const constants = {
   BASE_URL: "http://localhost:8080",
   PLUTO_PATH: "/api/v1/pluto",
-  SUREIFY_OBJECT_MAPPINGS: "/sureify-object-mappings",
-  CLIENT_APIS: "/client-apis",
+  SUREIFY_OBJECT_MAPPINGS: "/sureify-object-mappings/",
+  CLIENT_APIS: "/client-apis/",
   CLIENT_DATA_SOURCE_ID: "client_data_source_id",
   SOM_URL: function () {
     this.BASE_URL =

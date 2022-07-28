@@ -1,6 +1,6 @@
 // Packages
 import React, { useState } from "react";
-import axios from "axios";
+import { axiosInstance as axios } from "../../../config/axiosConfig";
 import { v4 as uuidv4 } from "uuid";
 
 // Custom Objects

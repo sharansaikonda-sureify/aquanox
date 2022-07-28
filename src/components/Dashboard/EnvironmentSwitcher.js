@@ -230,7 +230,7 @@ const EnvironmentSwitcher = () => {
                   </Button>
                   <Button
                     size="small"
-                    color="error"
+                    color="primary"
                     variant="contained"
                     endIcon={<AddOutlined />}
                     onClick={createEnvironment}
