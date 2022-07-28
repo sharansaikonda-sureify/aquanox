@@ -11,6 +11,7 @@ const CustomTextFieldNumber = ({
   changeHandler,
   helperText,
   isLocked,
+  extraParams = {},
 }) => {
   return (
     <FormControl sx={{ m: 1, minWidth: "100%" }}>
@@ -20,7 +21,9 @@ const CustomTextFieldNumber = ({
         type="number"
         label={labelName}
         value={data[textFieldId]}
-        onChange={changeHandler}
+        onChange={(e) => {
+          changeHandler(e, extraParams);
+        }}
         disabled={isLocked}
       />
       <FormHelperText>{helperText}</FormHelperText>

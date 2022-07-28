@@ -11,6 +11,7 @@ const CustomTextArea = ({
   helperText,
   isLocked,
   changeHandler,
+  extraParams = {},
 }) => {
   return (
     <FormControl sx={{ m: 1, minWidth: "100%" }}>
@@ -21,7 +22,9 @@ const CustomTextArea = ({
         name={textAreaId}
         label={labelName}
         value={data[textAreaId]}
-        onChange={changeHandler}
+        onChange={(e) => {
+          changeHandler(e, extraParams);
+        }}
         disabled={isLocked}
       />
       <FormHelperText>{helperText}</FormHelperText>

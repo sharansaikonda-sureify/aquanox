@@ -7,5 +7,6 @@ export const GetTokensData = () => {
   }
 
   delete tokens.base_url;
+  delete tokens.name;
   return tokens;
 };

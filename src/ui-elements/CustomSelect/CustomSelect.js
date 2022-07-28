@@ -19,6 +19,7 @@ const SelectTextFieldCombo = ({
   dropDownMap,
   isLocked,
   changeHandler,
+  extraParams = {},
 }) => {
   return (
     <FormControl sx={{ m: 1, minWidth: "100%" }}>
@@ -30,7 +31,9 @@ const SelectTextFieldCombo = ({
         value={data[selectId]}
         defaultValue={data[selectId]}
         label={labelName}
-        onChange={changeHandler}
+        onChange={(e) => {
+          changeHandler(e, extraParams);
+        }}
         disabled={isLocked}
       >
         {dropDownMap.map((value) => {

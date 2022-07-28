@@ -22,6 +22,7 @@ const SelectTextFieldCombo = ({
   isLocked,
   switchCondition,
   dropDownMap,
+  extraParams = {},
 }) => {
   if (switchCondition) {
     return (
@@ -32,7 +33,9 @@ const SelectTextFieldCombo = ({
           name={selectId}
           label={labelName}
           value={data[selectId]}
-          onChange={changeHandler}
+          onChange={(e) => {
+            changeHandler(e, extraParams);
+          }}
           disabled={isLocked}
         />
         <FormHelperText>{helperText}</FormHelperText>
@@ -51,7 +54,9 @@ const SelectTextFieldCombo = ({
         value={data[selectId]}
         defaultValue={data[selectId]}
         label={labelName}
-        onChange={changeHandler}
+        onChange={(e) => {
+          changeHandler(e, extraParams);
+        }}
         disabled={isLocked}
       >
         {dropDownMap.map((value, idx) => {
