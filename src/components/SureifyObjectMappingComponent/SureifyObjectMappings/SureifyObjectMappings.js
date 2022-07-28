@@ -349,7 +349,7 @@ const SureifyObjectMappings = ({ $, Popper }) => {
               : screenAdjusterState.position === 1
               ? "col-4"
               : "d-none"
-          } customscrollbar responsecontainer`}
+          } customscrollbar responsecontainer mt-4`}
         >
           <CDSResponse data={response} />
         </div>
