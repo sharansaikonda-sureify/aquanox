@@ -115,7 +115,7 @@ export function ClientAPI({
     return {
       ca_cert: this.ca_cert,
       cache_time: this.cache_time,
-      client_data_source_uuid: this.client_data_source_uuid,
+      client_data_source_uuid: uuidv4(),
 
       body: JSON.parse(this.body),
       clear_api_caches: JSON.parse(this.clear_api_caches),
@@ -136,7 +136,7 @@ export function ClientAPI({
     return {
       ca_cert: this.ca_cert,
       cache_time: this.cache_time,
-      client_data_source_uuid: this.client_data_source_uuid,
+      client_data_source_uuid: uuidv4(),
 
       body: JSON.parse(this.body),
       clear_api_caches: JSON.parse(this.clear_api_caches),
