@@ -46,7 +46,7 @@ const ClientAPIObjectMapping = ({
     if (isLocked) {
       try {
         const tokens = GetTokensData();
-        const fetch_url = constants.CLIENT_APIS_URL() + "/" + data.id;
+        const fetch_url = constants.CLIENT_APIS_URL() + data.id;
         const resp = await axios.get(fetch_url, {
           headers: tokens,
         });
@@ -86,13 +86,9 @@ const ClientAPIObjectMapping = ({
     try {
       const jsonData = data.getPutMappings();
       const tokens = GetTokensData();
-      await axios.put(
-        constants.CLIENT_APIS_URL() + "/" + clientAPIId,
-        jsonData,
-        {
-          headers: tokens,
-        }
-      );
+      await axios.put(constants.CLIENT_APIS_URL() + clientAPIId, jsonData, {
+        headers: tokens,
+      });
     } catch (e) {
       setErrorState({ error: e, showModal: true });
     }
@@ -105,7 +101,7 @@ const ClientAPIObjectMapping = ({
     ) {
       try {
         const tokens = GetTokensData();
-        await axios.delete(constants.CLIENT_APIS_URL() + "/" + clientAPIId, {
+        await axios.delete(constants.CLIENT_APIS_URL() + clientAPIId, {
           headers: tokens,
         });
 

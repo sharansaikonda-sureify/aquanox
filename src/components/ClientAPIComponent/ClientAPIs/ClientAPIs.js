@@ -49,7 +49,7 @@ const ClientAPIs = ({ $, Popper }) => {
     const tokens = GetTokensData();
     try {
       for (let i = 0; i < arr.length; i++) {
-        const fetch_url = constants.CLIENT_APIS_URL() + "/" + arr[i];
+        const fetch_url = constants.CLIENT_APIS_URL() + arr[i];
         const resp = await axios.get(fetch_url, {
           headers: tokens,
         });

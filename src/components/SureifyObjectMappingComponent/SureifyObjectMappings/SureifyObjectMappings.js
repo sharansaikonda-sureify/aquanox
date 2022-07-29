@@ -148,7 +148,7 @@ const SureifyObjectMappings = ({ $, Popper }) => {
   };
 
   const fetchResponse = async (data, cdsId) => {
-    const fetch_url = constants.SOM_URL() + "/" + cdsId + "?mapping_type=fetch";
+    const fetch_url = constants.SOM_URL() + cdsId + "?mapping_type=fetch";
     const tokens = GetTokensData();
     try {
       const resp = await axios.post(fetch_url, data, {
