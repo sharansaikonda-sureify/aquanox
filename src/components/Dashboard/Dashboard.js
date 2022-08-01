@@ -15,6 +15,7 @@ import { Button } from "@mui/material";
 
 // Custom Objects
 import constants from "../../constants/constants";
+import { GetTokensData } from "../../constants/utils";
 
 // Constants
 const objectKey = uuidv4();
@@ -37,7 +38,7 @@ const Dashboard = () => {
   };
 
   const executeAPI = async () => {
-    const tokens = JSON.parse(localStorage.getItem("tokens"));
+    const tokens = GetTokensData();
     const resp = await request.getResponse(tokens);
     setResponse(resp?.data);
   };
