@@ -85,7 +85,7 @@ const ClientAPIs = ({ $, Popper }) => {
         headers: tokens,
       });
 
-      if (resp2.data !== null) {
+      if (resp2.data.data !== null) {
         response.push(...resp2.data.data);
       }
 
