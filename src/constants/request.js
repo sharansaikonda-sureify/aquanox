@@ -2,7 +2,7 @@
 import { axiosInstance as axios } from "../config/axiosConfig";
 
 export const defaultPayload = {
-  headers: "{}",
+  headers: '{"Content-Type": "application/json"}',
   params: "{}",
   body: "{}",
   url: "",
