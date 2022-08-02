@@ -79,15 +79,17 @@ const ClientAPIs = ({ $, Popper }) => {
         headers: tokens,
       });
 
+      let response = [...resp1.data.data];
+
       const resp2 = await axios.get(fetch_url2, {
         headers: tokens,
       });
 
-      let response = [...resp1.data.data];
-      response.push(...resp2.data.data);
+      if (resp2.data !== null) {
+        response.push(...resp2.data.data);
+      }
 
       let data = [];
-
       for (let i = 0; i < response.length; i++) {
         data.push(new ClientAPI(response[i]));
       }
