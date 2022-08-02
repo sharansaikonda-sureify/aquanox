@@ -10,7 +10,7 @@ export const defaultPayload = {
 };
 
 export function Request({
-  headers = "{}",
+  headers = '{"Content-Type": "application/json"}',
   params = "{}",
   body = "{}",
   url = "",
