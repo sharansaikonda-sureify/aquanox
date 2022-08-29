@@ -103,7 +103,7 @@ const SureifyObjectMappings = ({ $, Popper }) => {
         headers: tokens,
       });
       let data = [];
-      for (let i = 0; i < resp.data.data.length; i++) {
+      for (let i = 0; i < resp.data.data?.length; i++) {
         data.push(new SureifyObjectMapping(resp.data.data[i]));
       }
       const s = new Set(data.map((row) => row.parent_idx));
